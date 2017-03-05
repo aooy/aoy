@@ -1,7 +1,7 @@
 var webpack = require('webpack')
 module.exports = {
    entry: {
-      'Mdom' : './src/index.js',
+      'aoy' : './src/index.js',
     },
   output: {
       path: './dist/',

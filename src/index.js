@@ -1,5 +1,5 @@
 import { baseInit } from './instance/baseInit'
-import { isBrowser, toArray} from './util'
+import { isBrowser, toArray} from './util/index'
 export function Mdom(){
 	if(this instanceof Mdom){
 		const arg = toArray(arguments);

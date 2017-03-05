@@ -1,4 +1,4 @@
-import { createVdom, isArray, error, toArray}  from '../util'
+import { createVdom, isArray, error, toArray}  from '../util/index'
 
 export function baseInit(Mdom){
 	Mdom.prototype._init = function(arg){

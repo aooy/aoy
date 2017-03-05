@@ -1,9 +1,11 @@
-export let Vdom = {
-	tagName: null,
-	sel: null,
-	id: null,
-	class: [],
-	children: [],
-	el: null
-};
-
+export function Vdom(){
+	return  {
+		tagName: null,
+		sel: null,
+		id: null,
+		class: [],
+		children: [],
+		el: null,
+		key: null
+	};
+}

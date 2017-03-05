@@ -1,7 +1,7 @@
-import  { isString, isObject, isArray} from './index'
-import { Vdom } from '../vdom'
+import  { isString, isObject, isArray, createEle} from './index'
+import { Vdom } from '../vdom/index'
 
-function parseQuery(query, vdom){
+function parseQuery(vdom, query){
 	let k,
 		state = 0,
 		j = 0;
@@ -22,29 +22,35 @@ function parseQuery(query, vdom){
 	}
 	
 }
-
+function parseData(vdom, v){
+	let i;
+	vdom.data = v;
+	if((i = v.class) !== null && i.length > 0){
+		i.split(' ').forEach(function(v, j){
+			vdom.class.push(v);
+		});
+	}
+}
 export function createVdom(arg){
-	
 	let i=0,
-		vd = Object.create(Vdom);
+		vd = new Vdom;
 
 	while(i < arg.length){
 		let v = arg[i];
-		
 		if(i === 0 && isString(v)){
 			// div#id.classA
 			vd.sel = v;
-			parseQuery(v, vd)
+			parseQuery(vd, v)
 		}else if(i != 0 && isObject(v)){
-			// class style click
-			vd.data = v;
+			// class style clickEvent
+			parseData(vd, v)
 		}else if(i != 0 && isArray(v)){
 			// childern
-			vd.childern = v;
+			vd.children = v;
 		}
-
 		i++;
 	}
+	createEle(vd);
 	console.log(vd)
 	return vd;
 }

@@ -11,7 +11,7 @@ function parseQuery(vdom, query){
 				if(state === 0){
 					vdom.tagName = query.substring(j, !k ? i : len);
 				}else if(state === 1){
-					vdom.class.push(query.substring(j, !k ? i : len));
+					vdom.className.push(query.substring(j, !k ? i : len));
 				}else if(state === 2){
 					vdom.id = query.substring(j, !k ? i : len);
 				}
@@ -25,9 +25,9 @@ function parseQuery(vdom, query){
 function parseData(vdom, v){
 	let i;
 	vdom.data = v;
-	if((i = v.class) !== null && i.length > 0){
+	if((i = v.class) != null && i.length > 0){
 		i.split(' ').forEach(function(v, j){
-			vdom.class.push(v);
+			vdom.className.push(v);
 		});
 	}
 }
@@ -50,7 +50,7 @@ export function createVdom(arg){
 		}
 		i++;
 	}
-	createEle(vd);
+	//createEle(vd);// create true dom
 	console.log(vd)
 	return vd;
 }

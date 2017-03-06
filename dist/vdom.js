@@ -17,7 +17,7 @@ function Vdom(){
 		tagName: null,
 		sel: null,
 		id: null,
-		class: [],
+		className: [],
 		children: [],
 		el: null,
 		key: null
@@ -34,7 +34,7 @@ function parseQuery(vdom, query){
 				if(state === 0){
 					vdom.tagName = query.substring(j, !k ? i : len);
 				}else if(state === 1){
-					vdom.class.push(query.substring(j, !k ? i : len));
+					vdom.className.push(query.substring(j, !k ? i : len));
 				}else if(state === 2){
 					vdom.id = query.substring(j, !k ? i : len);
 				}
@@ -48,9 +48,9 @@ function parseQuery(vdom, query){
 function parseData(vdom, v){
 	var i;
 	vdom.data = v;
-	if((i = v.class) !== null && i.length > 0){
+	if((i = v.class) != null && i.length > 0){
 		i.split(' ').forEach(function(v, j){
-			vdom.class.push(v);
+			vdom.className.push(v);
 		});
 	}
 }
@@ -73,7 +73,7 @@ function createVdom$$1(arg){
 		}
 		i++;
 	}
-	createEle$$1(vd);
+	//createEle(vd);// create true dom
 	console.log(vd);
 	return vd;
 }
@@ -111,14 +111,6 @@ function toArray(arr){
 	return [].slice.call(arr);
 }
 
-function createEle$$1(vdom){
-	var i, e;
-	if( i = vdom.tagName ) { e = api$$1.createElement(i); }
-	if( (i = vdom.class).length > 0 ) { api$$1.addClass(e, i); }
-	if( (i = vdom.children).length > 0 ) { api$$1.appendChildren(e, i); }
-	vdom.el = e;
-}
-
 var api$$1 = Object.create(null);
 
 if(isBrowser){
@@ -130,6 +122,21 @@ if(isBrowser){
 	};
 	api$$1.appendChild = function(parent, child){
 		return parent.appendChild(child);
+	};
+	api$$1.setAttribute = function(ele, key, value){
+		ele.setAttribute(key, value);
+	};
+	api$$1.parentNode = function(node){
+		return node.parentNode;
+	};
+	api$$1.insertBefore = function(parent, newNode, rf){
+		return parent.insertBefore(newNode, rf);
+	};
+	api$$1.nextSibling = function(el){
+		return el.nextSibling;
+	};
+	api$$1.removeChild = function(parent, rc){
+		return parent.removeChild(rc);
 	};
 	api$$1.appendChildren = function(ele, children){
 		var this$1 = this;
@@ -148,8 +155,24 @@ if(isBrowser){
 			}
 		}
 	};
+	api$$1.setAttrs = function(ele, a){
+		var this$1 = this;
+
+		if(ele && isObject(a)){
+			for(var k in a){
+				if(k === 'class') { continue; }
+				var s = a[k];
+				if(k === 'style' && isObject(s)){
+					for(var j in s){
+						ele.style[j] = s[j];
+					}
+				}
+				this$1.setAttribute(ele, k, s);
+			}
+		}
+	};
 }else{
-	error('env is not in browser');
+	error("There is not in browser's env");
 }
 
 function baseInit(Mdom){
@@ -176,18 +199,18 @@ function baseInit(Mdom){
 	};
 }
 
-function Mdom(){
-	if(this instanceof Mdom){
+function Aoy(){
+	if(this instanceof Aoy){
 		var arg = toArray(arguments);
 		this._init(arg);
 	}	
 }
 
-baseInit(Mdom);
+baseInit(Aoy);
 
-if(isBrowser) { window.Mdom = Mdom; }
+if(isBrowser) { window.Aoy = Aoy; }
 
-exports.Mdom = Mdom;
+exports.Aoy = Aoy;
 
 Object.defineProperty(exports, '__esModule', { value: true });
 

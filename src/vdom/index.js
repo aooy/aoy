@@ -1,11 +1,2 @@
-export function Vdom(){
-	return  {
-		tagName: null,
-		sel: null,
-		id: null,
-		class: [],
-		children: [],
-		el: null,
-		key: null
-	};
-}
+export * from './vnode'
+export * from './diff'

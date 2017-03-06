@@ -1,12 +1,12 @@
 import { baseInit } from './instance/baseInit'
 import { isBrowser, toArray} from './util/index'
-export function Mdom(){
-	if(this instanceof Mdom){
+export function Aoy(){
+	if(this instanceof Aoy){
 		const arg = toArray(arguments);
 		this._init(arg);
 	}	
 }
 
-baseInit(Mdom)
+baseInit(Aoy)
 
-if(isBrowser) window.Mdom = Mdom;
+if(isBrowser) window.Aoy = Aoy;

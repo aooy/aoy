@@ -1,4 +1,4 @@
-import { isBrowser ,error, isArray } from './index'
+import { isBrowser ,error, isArray, isObject } from './index'
 
 export let api = Object.create(null);
 
@@ -11,6 +11,21 @@ if(isBrowser){
 	};
 	api.appendChild = function(parent, child){
 		return parent.appendChild(child);
+	};
+	api.setAttribute = function(ele, key, value){
+		ele.setAttribute(key, value);
+	};
+	api.parentNode = function(node){
+		return node.parentNode;
+	};
+	api.insertBefore = function(parent, newNode, rf){
+		return parent.insertBefore(newNode, rf);
+	};
+	api.nextSibling = function(el){
+		return el.nextSibling;
+	};
+	api.removeChild = function(parent, rc){
+		return parent.removeChild(rc);
 	};
 	api.appendChildren = function(ele, children){
 		if(ele && isArray(children)){
@@ -27,6 +42,33 @@ if(isBrowser){
 			}
 		}
 	};
+	api.setAttrs = function(ele, a){
+		if(ele && isObject(a)){
+			for(let k in a){
+				if(k === 'class') continue;
+				let s = a[k];
+				if(k === 'style' && isObject(s)){
+					for(let j in s){
+						ele.style[j] = s[j];
+					}
+				}
+				this.setAttribute(ele, k, s);
+			}
+		}
+	};
 }else{
-	error('env is not in browser');
+	error("There is not in browser's env");
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,11 +1,12 @@
+
 export function Vdom(){
-	return  {
-		tagName: null,
-		sel: null,
-		id: null,
-		className: [],
-		children: [],
-		el: null,
-		key: null
-	};
+		this.tagName = null;
+		this.sel = null;
+		this.id = null;
+		this.className = [];
+		this.children = null;
+		this.el = null;
+		this.data = null;
+		this.key = null;
+		this.text = null;
 }

@@ -1,4 +1,5 @@
-import { isBrowser ,error, isArray, isObject } from './index'
+import { isBrowser ,error, isArray, isObject, isString } from './index'
+import { Vdom, createEle } from '../vdom/index'
 
 export let api = Object.create(null);
 
@@ -30,16 +31,31 @@ if(isBrowser){
 	api.appendChildren = function(ele, children){
 		if(ele && isArray(children)){
 			for(let i = 0; i < children.length; i++){
-				let c = children[i].el ? children[i].el : this.createTextNode(children[i]);
+				let c;
+				if(children[i] instanceof Vdom){
+					c = children[i].el || createEle(children[i]).el;
+				}else if(isString(children[i])){
+					c = this.createTextNode(children[i]);
+				}
+				
 				this.appendChild(ele, c);
 			}
+		}else if(ele && isString(children)){
+			this.appendChild(ele, this.createTextNode(children));
 		}
 	};
-	api.addClass = function(ele, c){
+	api.setClass = function(ele, c){
 		if(ele && isArray(c)){
+			let k = '';
 			for(let i = 0; i < c.length; i++){
-				ele.classList.add(c[i]);
+				//ele.classList.add(c[i]);
+				if(i !== c.length-1){
+					k += c[i] + ' ';
+				}else{
+					k += c[i];
+				}
 			}
+			ele.className = k;
 		}
 	};
 	api.setAttrs = function(ele, a){
@@ -50,9 +66,11 @@ if(isBrowser){
 				if(k === 'style' && isObject(s)){
 					for(let j in s){
 						ele.style[j] = s[j];
+						console.log(j,s[j])
 					}
+				}else{
+					this.setAttribute(ele, k, s);
 				}
-				this.setAttribute(ele, k, s);
 			}
 		}
 	};

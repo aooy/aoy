@@ -11,17 +11,57 @@ function error(info, context){
 		console.error(info);
 	}
 }
+function warn(info, context){
+	if ( context === void 0 ) context=null;
+
+	if(typeof console !== 'undeifine'){
+		console.warn(info);
+	}
+}
+
+function judge(o){
+	return Object.prototype.toString.call(o);
+}
+
+function isArray(arr){
+	return judge(arr) === '[object Array]';
+}
+
+function isObject(o){
+	return judge(o) === '[object Object]';
+}
+
+	
+
+function isString(s){
+	return typeof s === 'string';
+}
+
+
+
+
+
+var isBrowser = true;
+try{
+	isBrowser = typeof window !== 'undefined' && isObject(window) !== '[object Object]';
+}catch(e){
+	isBrowser = false;
+}
+
+function toArray(arr){
+	return [].slice.call(arr);
+}
 
 function Vdom(){
-	return  {
-		tagName: null,
-		sel: null,
-		id: null,
-		className: [],
-		children: [],
-		el: null,
-		key: null
-	};
+		this.tagName = null;
+		this.sel = null;
+		this.id = null;
+		this.className = [];
+		this.children = null;
+		this.el = null;
+		this.data = null;
+		this.key = null;
+		this.text = null;
 }
 
 function parseQuery(vdom, query){
@@ -32,7 +72,7 @@ function parseQuery(vdom, query){
 		var char = query[i];
 			if(char === '.' || char === '#' || (k = i === len-1)){
 				if(state === 0){
-					vdom.tagName = query.substring(j, !k ? i : len);
+					vdom.tagName = query.substring(j, !k ? i : len).toUpperCase();
 				}else if(state === 1){
 					vdom.className.push(query.substring(j, !k ? i : len));
 				}else if(state === 2){
@@ -70,6 +110,11 @@ function createVdom$$1(arg){
 		}else if(i != 0 && isArray(v)){
 			// childern
 			vd.children = v;
+			if(v.length === 1 && isString(v[0])) { vd.text = v[0]; }
+		}else if(i != 0 && isString(v)){
+			//textNode
+			vd.children = v;
+			vd.text = v;
 		}
 		i++;
 	}
@@ -78,37 +123,17 @@ function createVdom$$1(arg){
 	return vd;
 }
 
-function judge(o){
-	return Object.prototype.toString.call(o);
-}
+function createEle(vdom){
+	var i, e;
+	if( (i = vdom.tagName) && vdom.el === null) { e = api$$1.createElement(i); }
+	if( vdom.el && vdom.el.nodeType === 1 ) { e = vdom.el; } // if exist el, update el
+	if( (i = vdom.className).length > 0 ) { api$$1.setClass(e, i); }
+	if( isObject(i = vdom.data) > 0 ) { api$$1.setAttrs(e, i); }
+	if( (i = vdom.children) !== null ) { api$$1.appendChildren(e, i); }
+	if( isString(vdom)) { return api$$1.createTextNode(vdom); } //textNode
+	vdom.el = e;
 
-function isArray(arr){
-	return judge(arr) === '[object Array]';
-}
-
-function isObject(o){
-	return judge(o) === '[object Object]';
-}
-
-	
-
-function isString(s){
-	return typeof s === 'string';
-}
-
-
-
-
-
-var isBrowser = true;
-try{
-	isBrowser = typeof window !== 'undefined' && isObject(window) !== '[object Object]';
-}catch(e){
-	isBrowser = false;
-}
-
-function toArray(arr){
-	return [].slice.call(arr);
+	return vdom;
 }
 
 var api$$1 = Object.create(null);
@@ -143,16 +168,31 @@ if(isBrowser){
 
 		if(ele && isArray(children)){
 			for(var i = 0; i < children.length; i++){
-				var c = children[i].el ? children[i].el : this$1.createTextNode(children[i]);
+				var c = (void 0);
+				if(children[i] instanceof Vdom){
+					c = children[i].el || createEle(children[i]).el;
+				}else if(isString(children[i])){
+					c = this$1.createTextNode(children[i]);
+				}
+				
 				this$1.appendChild(ele, c);
 			}
+		}else if(ele && isString(children)){
+			this.appendChild(ele, this.createTextNode(children));
 		}
 	};
-	api$$1.addClass = function(ele, c){
+	api$$1.setClass = function(ele, c){
 		if(ele && isArray(c)){
+			var k = '';
 			for(var i = 0; i < c.length; i++){
-				ele.classList.add(c[i]);
+				//ele.classList.add(c[i]);
+				if(i !== c.length-1){
+					k += c[i] + ' ';
+				}else{
+					k += c[i];
+				}
 			}
+			ele.className = k;
 		}
 	};
 	api$$1.setAttrs = function(ele, a){
@@ -165,9 +205,11 @@ if(isBrowser){
 				if(k === 'style' && isObject(s)){
 					for(var j in s){
 						ele.style[j] = s[j];
+						console.log(j,s[j]);
 					}
+				}else{
+					this$1.setAttribute(ele, k, s);
 				}
-				this$1.setAttribute(ele, k, s);
 			}
 		}
 	};
@@ -175,10 +217,10 @@ if(isBrowser){
 	error("There is not in browser's env");
 }
 
-function baseInit(Mdom){
-	Mdom.prototype._init = function(arg){
+function baseInit(Aoy){
+	Aoy.prototype._init = function(arg){
 		if(arg.length === 0){
-			error('初始化参数不能为空');
+			warn('初始化参数不能为空');
 			return;
 		}
 		if(isArray(arg) && arg.length > 0) {
@@ -189,13 +231,17 @@ function baseInit(Mdom){
 		var arg = toArray(arguments);
 
 		if(arg.length === 0){
-			error('初始化参数不能为空');
+			error('el初始化参数不能为空');
 			return;
 		}
 		if(isArray(arg) && arg.length > 0) {
 			return createVdom$$1.call(this,arg);
 		}	
-		 
+	};
+	window.mount = function(parent ,vdom){
+		var d = createEle(vdom);
+		document.body.appendChild(d.el);
+		//api.appendChild(parent, d.el);
 	};
 }
 

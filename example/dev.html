@@ -7,7 +7,11 @@
 <body>
 
 <script>
-	var d = el('div#d.ckk', {class: 'b','data-e':"qq", 'ss': 2}, ['aaa',el('div#asdd.dd')])
+	var d = el('div#d.ckk', {class: 'b','data-e':"qq", 'ss': 2, style: {width: '100px'}}, ['abc',el('div#asdd.dd',['1']) ] );
+
+	//var newD = el('div#d.ckk', {class: 'b','data-e':"qq", 'ss': 2, style: {width: '100px'}});
+	console.log(d.el)
+	mount(document.body, d) 
 </script>
 </body>
 </html>

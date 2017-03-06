@@ -1,5 +1,5 @@
-import  { isString, isObject, isArray, createEle} from './index'
-import { Vdom } from '../vdom/index'
+import  { isString, isObject, isArray } from '../util/index'
+import { Vdom, createEle  } from './index'
 
 function parseQuery(vdom, query){
 	let k,
@@ -9,7 +9,7 @@ function parseQuery(vdom, query){
 		let char = query[i];
 			if(char === '.' || char === '#' || (k = i === len-1)){
 				if(state === 0){
-					vdom.tagName = query.substring(j, !k ? i : len);
+					vdom.tagName = query.substring(j, !k ? i : len).toUpperCase();
 				}else if(state === 1){
 					vdom.className.push(query.substring(j, !k ? i : len));
 				}else if(state === 2){
@@ -47,6 +47,11 @@ export function createVdom(arg){
 		}else if(i != 0 && isArray(v)){
 			// childern
 			vd.children = v;
+			if(v.length === 1 && isString(v[0])) vd.text = v[0];
+		}else if(i != 0 && isString(v)){
+			//textNode
+			vd.children = v;
+			vd.text = v;
 		}
 		i++;
 	}

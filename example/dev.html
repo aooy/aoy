@@ -8,15 +8,15 @@
 
 <script>
  /***1. 节点值得比较，老节点没有子节点，新节点有子节点***/
-	var d = el('div#d.ckk', {class: 'b','data-e':"qq", 'ss': 2, style: {background: 'orange',height:'100px'}} );
+	// var d = el('div#d.ckk', {class: 'b','data-e':"qq", 'ss': 2, style: {background: 'orange',height:'100px'}} );
 
-	var newD = el('div#d.ckk', {class: 'b','data-e':"qq", 'ss': 2, style: { width: '100px'}},
-					['abc',el('div#asdd.dd',['im div',el('p','qweq')]) ]
-					);
-	mount(document.body, d)
-	setTimeout(function(){
-		patch(d, newD);
-	},2000)
+	// var newD = el('div#d.ckk', {class: 'b','data-e':"qq", 'ss': 2, style: { width: '100px'}},
+	// 				['abc',el('div#asdd.dd',['im div',el('p','qweq')]) ]
+	// 				);
+	// mount(document.body, d)
+	// setTimeout(function(){
+	// 	patch(d, newD);
+	// },2000)
 
  /***2. 节点不值得比较 ***/
 	// var d = el('div#d.ckk', {class: 'b','data-e':"qq", 'ss': 2, style: {background: 'orange',height:'100px'}} );
@@ -37,6 +37,15 @@
 	// setTimeout(function(){
 	// 	patch(d, newD);
 	// },2000)
+/***4. 新的节点的子节点只有一个文本节点 ***/
+	var d = el('div#d.ckk', {class: 'b','data-e':"1", style: {background: 'orange',height:'100px'}}, 'abc' );
+
+	var newD = el('div#cc.eee', {class: 'pp','data-w':"2", style: { background: 'green',height:'100px'}}, '222');
+
+	mount(document.body, d)
+	setTimeout(function(){
+		patch(d, newD);
+	},1500)
 	console.log(d.el)
 	 
 </script>

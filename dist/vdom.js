@@ -62,6 +62,7 @@ function Vdom(){
 		this.data = null;
 		this.key = null;
 		this.text = null;
+		this.attr = [];
 }
 
 function sameNode(oldVnode, vnode){
@@ -72,20 +73,40 @@ function patchNode(oldVnode, vnode){
 	var el = vnode.el = oldVnode.el;
     var i, oldCh = oldVnode.children, ch = vnode.children;
     if (oldVnode === vnode) { return; }
+    if(oldVnode.text && vnode.text){
+    }
     //update class attr	
-    api$$1.setClass(el, vnode.className);
-    api$$1.setAttrs(el, vnode.data);
-    if(oldCh && ch && oldCh !== ch){
-    	updateChildren(el, oldCh, ch);
-    }else if(ch){
-    	createEle(vnode); //create el children
-    }else if(oldCh){
-    	api$$1.removeChildren(el);
+    updateEle(el, vnode, oldVnode);
+    if(ch && ch[0].text && ch.length === 1){
+    	//it's childern only a textNode
+    	if(!oldCh || oldCh.length !== ch.length || oldCh[0].text !== ch[0].text){
+    		//api.setTextContent(el, createEle(ch[0]).text);
+    		api$$1.removeChild(el, oldCh[0].el);
+    		api$$1.appendChild(el, createEle(ch[0]).el);
+    	}
+    }else{
+    	if(oldCh && ch && oldCh !== ch){
+	    	updateChildren(el, oldCh, ch);
+	    }else if(ch){
+	    	createEle(vnode); //create el's children dom
+	    }else if(oldCh){
+	    	api$$1.removeChildren(el);
+	    }
     }
 }
 
-function updateChildren(oldch, ch){
-
+function updateChildren(parent, oldch, ch){
+	var oldStartIdx = 0, newStartIdx = 0;
+    var oldEndIdx = oldCh.length - 1;
+    var oldStartVnode = oldCh[0];
+    var oldEndVnode = oldCh[oldEndIdx];
+    var newEndIdx = newCh.length - 1;
+    var newStartVnode = newCh[0];
+    var newEndVnode = newCh[newEndIdx];
+    var oldKeyToIdx;
+    var idxInOld;
+    var elmToMove;
+    var before;
 }
 
 function patch$$1(oldVnode, vnode){
@@ -127,15 +148,21 @@ function parseQuery(vdom, query){
 	}
 	
 }
+
 function parseData(vdom, v){
-	var i;
-	vdom.data = v;
-	if((i = v.class) != null && i.length > 0){
-		i.split(' ').forEach(function(v, j){
-			vdom.className.push(v);
-		});
+	for(var k in v){
+		if(k === 'class'){
+			var i = v[k].split(' ');
+			for(var j = 0; j < i.length; j++){
+				vdom.className.push(i[j]);
+			}
+		}else if(k !== 'style'){
+			vdom.attr.push(k);	
+		}
 	}
+	vdom.data = v;
 }
+
 function parseChindren(vdom, v){
 	var a = [];
 	for(var i = 0; i < v.length; i++){
@@ -151,7 +178,7 @@ function createVdomTxt$$1(str){
 	var vd = new Vdom();
 	if(isString(str)){
 		vd.text = str;
-		vd.el = api$$1.createTextNode(str);
+		//vd.el = api.createTextNode(str);
 	}
 	return vd;
 }
@@ -174,7 +201,6 @@ function createVdom$$1(arg){
 			}else if(isString(v)){
 				//only textNode
 				parseChindren(vd, [v]);
-				vd.text = v;
 			}
 		}
 		i++;
@@ -185,16 +211,27 @@ function createVdom$$1(arg){
 }
 
 function createEle(vdom){
-	var i, e;
-	if( (i = vdom.tagName) && vdom.el === null) { e = api$$1.createElement(i); }
-	if( vdom.el && vdom.el.nodeType === 1 ) { e = vdom.el; } // if exist el, update el
-	if( (i = vdom.className).length > 0 ) { api$$1.setClass(e, i); }
-	if( isObject(i = vdom.data) > 0 ) { api$$1.setAttrs(e, i); }
-	if( (i = vdom.children) !== null ) { api$$1.appendChildren(e, i); }
-	if( isString(vdom)) { return api$$1.createTextNode(vdom); } //textNode
-	vdom.el = e;
-
+	var i, e; 
+	if( !vdom.el && (i = vdom.text)){
+		e = vdom.el = api$$1.createTextNode(i);
+		return vdom;
+	} 
+	if( (i = vdom.tagName) && vdom.el === null){
+		e = vdom.el = api$$1.createElement(i);
+	}else if(vdom.el.nodeType === 1){
+		e = vdom.el;
+	}
+	updateEle(e, vdom);
 	return vdom;
+}
+
+function updateEle(e ,vdom, oldVdom){
+	var i;
+	if( (i = oldVdom) && i.attr.length > 0 ) { api$$1.removeAttrs(i); }
+	if( (i = vdom.className).length > 0 ) { api$$1.setClass(e, i); }
+	if( (i = vdom.data) !== null ) { api$$1.setAttrs(e, i); }
+	if( (i = vdom.id) !== null ) { api$$1.setId(e, i); }
+	if( (i = vdom.children) !== null ) { api$$1.appendChildren(e, i); }
 }
 
 var api$$1 = Object.create(null);
@@ -212,6 +249,9 @@ if(isBrowser){
 	api$$1.setAttribute = function(ele, key, value){
 		ele.setAttribute(key, value);
 	};
+	api$$1.removeAttribute = function(ele, key){
+		ele.removeAttribute(key);
+	};
 	api$$1.parentNode = function(node){
 		return node.parentNode;
 	};
@@ -223,6 +263,12 @@ if(isBrowser){
 	};
 	api$$1.removeChild = function(parent, rc){
 		return parent.removeChild(rc);
+	};
+	api$$1.setTextContent = function(ele, txt){
+		ele.textContent = txt;
+	};
+	api$$1.setId = function(ele, id){
+		ele.id = id;
 	};
 	api$$1.appendChildren = function(ele, children){
 		var this$1 = this;
@@ -255,17 +301,27 @@ if(isBrowser){
 		var this$1 = this;
 
 		if(ele && isObject(a)){
+
 			for(var k in a){
 				if(k === 'class') { continue; }
 				var s = a[k];
 				if(k === 'style' && isObject(s)){
 					for(var j in s){
 						ele.style[j] = s[j];
-						console.log(j,s[j]);
 					}
 				}else{
 					this$1.setAttribute(ele, k, s);
+					ele.attributes[k] = s;
 				}
+			}
+		}
+	};
+	api$$1.removeAttrs = function(vn){
+		var this$1 = this;
+
+		if(vn.attr.length > 0){
+			for(var i = 0; i < vn.attr.length; i++){
+				this$1.removeAttribute(vn.el, vn.attr[i]);
 			}
 		}
 	};

@@ -9,4 +9,5 @@ export function Vdom(){
 		this.data = null;
 		this.key = null;
 		this.text = null;
+		this.attr = [];
 }

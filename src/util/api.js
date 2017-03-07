@@ -16,6 +16,9 @@ if(isBrowser){
 	api.setAttribute = function(ele, key, value){
 		ele.setAttribute(key, value);
 	};
+	api.removeAttribute = function(ele, key){
+		ele.removeAttribute(key);
+	};
 	api.parentNode = function(node){
 		return node.parentNode;
 	};
@@ -27,6 +30,12 @@ if(isBrowser){
 	};
 	api.removeChild = function(parent, rc){
 		return parent.removeChild(rc);
+	};
+	api.setTextContent = function(ele, txt){
+		ele.textContent = txt;
+	};
+	api.setId = function(ele, id){
+		ele.id = id;
 	};
 	api.appendChildren = function(ele, children){
 		if(ele && isArray(children)){
@@ -55,17 +64,25 @@ if(isBrowser){
 	};
 	api.setAttrs = function(ele, a){
 		if(ele && isObject(a)){
+
 			for(let k in a){
 				if(k === 'class') continue;
 				let s = a[k];
 				if(k === 'style' && isObject(s)){
 					for(let j in s){
 						ele.style[j] = s[j];
-						console.log(j,s[j])
 					}
 				}else{
 					this.setAttribute(ele, k, s);
+					ele.attributes[k] = s;
 				}
+			}
+		}
+	};
+	api.removeAttrs = function(vn){
+		if(vn.attr.length > 0){
+			for(let i = 0; i < vn.attr.length; i++){
+				this.removeAttribute(vn.el, vn.attr[i]);
 			}
 		}
 	};

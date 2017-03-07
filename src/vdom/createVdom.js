@@ -23,15 +23,21 @@ function parseQuery(vdom, query){
 	}
 	
 }
+
 function parseData(vdom, v){
-	let i;
-	vdom.data = v;
-	if((i = v.class) != null && i.length > 0){
-		i.split(' ').forEach(function(v, j){
-			vdom.className.push(v);
-		});
+	for(let k in v){
+		if(k === 'class'){
+			let i = v[k].split(' ');
+			for(let j = 0; j < i.length; j++){
+				vdom.className.push(i[j]);
+			}
+		}else if(k !== 'style'){
+			vdom.attr.push(k);	
+		}
 	}
+	vdom.data = v;
 }
+
 function parseChindren(vdom, v){
 	let a = [];
 	for(let i = 0; i < v.length; i++){
@@ -47,7 +53,7 @@ export function createVdomTxt(str){
 	let vd = new Vdom();
 	if(isString(str)){
 		vd.text = str;
-		vd.el = api.createTextNode(str);
+		//vd.el = api.createTextNode(str);
 	}
 	return vd;
 }
@@ -70,7 +76,6 @@ export function createVdom(arg){
 			}else if(isString(v)){
 				//only textNode
 				parseChindren(vd, [v]);
-				vd.text = v;
 			}
 		}
 		i++;

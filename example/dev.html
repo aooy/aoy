@@ -8,24 +8,35 @@
 
 <script>
  /***1. 节点值得比较，老节点没有子节点，新节点有子节点***/
-	// var d = el('div#d.ckk', {class: 'b','data-e':"qq", 'ss': 2, style: {background: 'orange',height:'100px'}} );
-
-	// var newD = el('div#d.ckk', {class: 'b','data-e':"qq", 'ss': 2, style: { width: '100px'}},
-	// 				['abc',el('div#asdd.dd',['im div']) ]
-	// 				);
-	// mount(document.body, d)
-	// setTimeout(function(){
-	// 	patch(d, newD);
-	// },2000)
- /***2. 节点不值得比较 ***/
 	var d = el('div#d.ckk', {class: 'b','data-e':"qq", 'ss': 2, style: {background: 'orange',height:'100px'}} );
 
-	var newD = el('p#d.ckk', {class: 'b','data-e':"qq", 'ss': 2, style: { width: '100px'}},['abc',el('div#asdd.dd',['im div']) ]);
-
+	var newD = el('div#d.ckk', {class: 'b','data-e':"qq", 'ss': 2, style: { width: '100px'}},
+					['abc',el('div#asdd.dd',['im div',el('p','qweq')]) ]
+					);
 	mount(document.body, d)
 	setTimeout(function(){
 		patch(d, newD);
 	},2000)
+
+ /***2. 节点不值得比较 ***/
+	// var d = el('div#d.ckk', {class: 'b','data-e':"qq", 'ss': 2, style: {background: 'orange',height:'100px'}} );
+
+	// var newD = el('p#d.ckk', {class: 'b','data-e':"qq", 'ss': 2, style: { width: '100px'}},['abc',el('div#asdd.dd',['im div']) ]);
+
+	// mount(document.body, d)
+	// setTimeout(function(){
+	// 	patch(d, newD);
+	// },2000)
+
+/***3. 节点不值得比较 ***/
+	// var d = el('div#d.ckk', {class: 'b','data-e':"qq", 'ss': 2, style: {background: 'orange',height:'100px'}},['abc',el('div#asdd.dd',['im div']) ] );
+
+	// var newD = el('div#d.ckk', {class: 'b','data-e':"qq", 'ss': 2, style: { background: 'green',height:'100px'}});
+
+	// mount(document.body, d)
+	// setTimeout(function(){
+	// 	patch(d, newD);
+	// },2000)
 	console.log(d.el)
 	 
 </script>

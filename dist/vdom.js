@@ -64,10 +64,52 @@ function Vdom(){
 		this.text = null;
 }
 
+function sameNode(oldVnode, vnode){
+	return vnode.tagName === oldVnode.tagName;
+}
+
+function patchNode(oldVnode, vnode){
+	var el = vnode.el = oldVnode.el;
+    var i, oldCh = oldVnode.children, ch = vnode.children;
+    if (oldVnode === vnode) { return; }
+    //update class attr	
+    api$$1.setClass(el, vnode.className);
+    api$$1.setAttrs(el, vnode.data);
+    if(oldCh && ch && oldCh !== ch){
+    	updateChildren(el, oldCh, ch);
+    }else if(ch){
+    	createEle(vnode); //create el children
+    }else if(oldCh){
+    	api$$1.removeChildren(el);
+    }
+}
+
+function updateChildren(oldch, ch){
+
+}
+
+function patch$$1(oldVnode, vnode){
+	
+	if(sameNode(oldVnode, vnode)){
+		patchNode(oldVnode, vnode);
+	}else{
+		var oEl = oldVnode.el;
+		var parentEle = api$$1.parentNode(oEl);
+		createEle(vnode);
+		if(parentEle !== null){
+			api$$1.insertBefore(parentEle, vnode.el, api$$1.nextSibling(oEl));
+			api$$1.removeChild(parentEle, oldVnode.el);
+			oldVnode = null;
+		}
+	}
+	return vnode;
+}
+
 function parseQuery(vdom, query){
 	var k,
 		state = 0,
 		j = 0;
+	vdom.sel = query;
 	for(var i = 0, len = query.length; i < len; i++){
 		var char = query[i];
 			if(char === '.' || char === '#' || (k = i === len-1)){
@@ -94,27 +136,46 @@ function parseData(vdom, v){
 		});
 	}
 }
+function parseChindren(vdom, v){
+	var a = [];
+	for(var i = 0; i < v.length; i++){
+		if(!(v[i] instanceof Vdom)){
+			a.push(createVdomTxt$$1(v[i]));
+		}else{
+			a.push(v[i]);
+		}
+	}
+	vdom.children = a;
+}
+function createVdomTxt$$1(str){
+	var vd = new Vdom();
+	if(isString(str)){
+		vd.text = str;
+		vd.el = api$$1.createTextNode(str);
+	}
+	return vd;
+}
 function createVdom$$1(arg){
 	var i=0,
-		vd = new Vdom;
+		vd = new Vdom();
 
 	while(i < arg.length){
 		var v = arg[i];
 		if(i === 0 && isString(v)){
 			// div#id.classA
-			vd.sel = v;
 			parseQuery(vd, v);
-		}else if(i != 0 && isObject(v)){
-			// class style clickEvent
-			parseData(vd, v);
-		}else if(i != 0 && isArray(v)){
-			// childern
-			vd.children = v;
-			if(v.length === 1 && isString(v[0])) { vd.text = v[0]; }
-		}else if(i != 0 && isString(v)){
-			//textNode
-			vd.children = v;
-			vd.text = v;
+		}else if(i != 0){
+			if(isObject(v)){
+				// class style clickEvent .ect
+				parseData(vd, v);
+			}else if(isArray(v)){
+				// childern
+				parseChindren(vd, v);
+			}else if(isString(v)){
+				//only textNode
+				parseChindren(vd, [v]);
+				vd.text = v;
+			}
 		}
 		i++;
 	}
@@ -171,14 +232,9 @@ if(isBrowser){
 				var c = (void 0);
 				if(children[i] instanceof Vdom){
 					c = children[i].el || createEle(children[i]).el;
-				}else if(isString(children[i])){
-					c = this$1.createTextNode(children[i]);
 				}
-				
 				this$1.appendChild(ele, c);
 			}
-		}else if(ele && isString(children)){
-			this.appendChild(ele, this.createTextNode(children));
 		}
 	};
 	api$$1.setClass = function(ele, c){
@@ -213,6 +269,14 @@ if(isBrowser){
 			}
 		}
 	};
+	api$$1.removeChildren = function(ele){
+		var this$1 = this;
+
+		var i, ch = ele.childNodes;
+		while(ch[0]){
+			this$1.removeChild(ele, ch[0]);
+		}
+	};
 }else{
 	error("There is not in browser's env");
 }
@@ -235,14 +299,15 @@ function baseInit(Aoy){
 			return;
 		}
 		if(isArray(arg) && arg.length > 0) {
-			return createVdom$$1.call(this,arg);
+			return createVdom$$1.call(this, arg);
 		}	
 	};
-	window.mount = function(parent ,vdom){
+	window.mount = function(parent,vdom){
 		var d = createEle(vdom);
-		document.body.appendChild(d.el);
-		//api.appendChild(parent, d.el);
+		//document.body.appendChild(d.el)
+		api$$1.appendChild(parent, d.el);
 	};
+	window.patch = patch$$1;
 }
 
 function Aoy(){

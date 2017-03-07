@@ -1,10 +1,11 @@
-import  { isString, isObject, isArray } from '../util/index'
+import  { isString, isObject, isArray, isNumber, api } from '../util/index'
 import { Vdom, createEle  } from './index'
 
 function parseQuery(vdom, query){
 	let k,
 		state = 0,
 		j = 0;
+	vdom.sel = query;
 	for(let i = 0, len = query.length; i < len; i++){
 		let char = query[i];
 			if(char === '.' || char === '#' || (k = i === len-1)){
@@ -31,27 +32,46 @@ function parseData(vdom, v){
 		});
 	}
 }
+function parseChindren(vdom, v){
+	let a = [];
+	for(let i = 0; i < v.length; i++){
+		if(!(v[i] instanceof Vdom)){
+			a.push(createVdomTxt(v[i]));
+		}else{
+			a.push(v[i]);
+		}
+	}
+	vdom.children = a;
+}
+export function createVdomTxt(str){
+	let vd = new Vdom();
+	if(isString(str)){
+		vd.text = str;
+		vd.el = api.createTextNode(str);
+	}
+	return vd;
+}
 export function createVdom(arg){
 	let i=0,
-		vd = new Vdom;
+		vd = new Vdom();
 
 	while(i < arg.length){
 		let v = arg[i];
 		if(i === 0 && isString(v)){
 			// div#id.classA
-			vd.sel = v;
-			parseQuery(vd, v)
-		}else if(i != 0 && isObject(v)){
-			// class style clickEvent
-			parseData(vd, v)
-		}else if(i != 0 && isArray(v)){
-			// childern
-			vd.children = v;
-			if(v.length === 1 && isString(v[0])) vd.text = v[0];
-		}else if(i != 0 && isString(v)){
-			//textNode
-			vd.children = v;
-			vd.text = v;
+			parseQuery(vd, v);
+		}else if(i != 0){
+			if(isObject(v)){
+				// class style clickEvent .ect
+				parseData(vd, v);
+			}else if(isArray(v)){
+				// childern
+				parseChindren(vd, v);
+			}else if(isString(v)){
+				//only textNode
+				parseChindren(vd, [v]);
+				vd.text = v;
+			}
 		}
 		i++;
 	}

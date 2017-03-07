@@ -1,5 +1,5 @@
 import { isArray, error, toArray, api, warn }  from '../util/index'
-import { createVdom, createEle }  from '../vdom/index'
+import { createVdom, createEle, patch }  from '../vdom/index'
 export function baseInit(Aoy){
 	Aoy.prototype._init = function(arg){
 		if(arg.length === 0){
@@ -18,14 +18,15 @@ export function baseInit(Aoy){
 			return;
 		}
 		if(isArray(arg) && arg.length > 0) {
-			return createVdom.call(this,arg);
+			return createVdom.call(this, arg);
 		}	
 	}
-	window.mount = function(parent ,vdom){
+	window.mount = function(parent,vdom){
 		const d = createEle(vdom);
-		document.body.appendChild(d.el)
-		//api.appendChild(parent, d.el);
+		//document.body.appendChild(d.el)
+		api.appendChild(parent, d.el);
 	}
+	window.patch = patch;
 }
 
 

@@ -34,14 +34,9 @@ if(isBrowser){
 				let c;
 				if(children[i] instanceof Vdom){
 					c = children[i].el || createEle(children[i]).el;
-				}else if(isString(children[i])){
-					c = this.createTextNode(children[i]);
 				}
-				
 				this.appendChild(ele, c);
 			}
-		}else if(ele && isString(children)){
-			this.appendChild(ele, this.createTextNode(children));
 		}
 	};
 	api.setClass = function(ele, c){
@@ -72,6 +67,12 @@ if(isBrowser){
 					this.setAttribute(ele, k, s);
 				}
 			}
+		}
+	};
+	api.removeChildren = function(ele){
+		let i, ch = ele.childNodes;
+		while(ch[0]){
+			this.removeChild(ele, ch[0]);
 		}
 	};
 }else{

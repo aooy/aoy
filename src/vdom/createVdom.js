@@ -80,7 +80,6 @@ export function createVdom(arg){
 		}
 		i++;
 	}
-	//createEle(vd);// create true dom
 	console.log(vd)
 	return vd;
 }

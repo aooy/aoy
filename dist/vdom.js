@@ -65,22 +65,49 @@ function Vdom(){
 		this.attr = [];
 }
 
-function sameNode(oldVnode, vnode){
+function sameVnode(oldVnode, vnode){
 	return vnode.tagName === oldVnode.tagName;
 }
-
-function patchNode(oldVnode, vnode){
+function createKeyToOldIdx(children, beginIdx, endIdx) {
+    var i, map = {}, key, ch;
+    for (i = beginIdx; i <= endIdx; ++i) {
+        ch = children[i];
+        if (ch != null) {
+            key = ch.key;
+            if (key !== undefined)
+                { map[key] = i; }
+        }
+    }
+    return map;
+}
+function removeVnodes(parentElm, vnodes, startIdx, endIdx) {
+        for (; startIdx <= endIdx; ++startIdx) {
+            var ch = vnodes[startIdx];
+            if (ch != null) {
+                    api$$1.removeChild(parentElm, ch.el);
+            }
+        }
+    }
+function addVnodes(parentElm, before, vnodes, startIdx, endIdx) {
+        for (; startIdx <= endIdx; ++startIdx) {
+            var ch = vnodes[startIdx];
+            if (ch != null) {
+                api$$1.insertBefore(parentElm, createElm(ch, insertedVnodeQueue), before);
+            }
+        }
+    }    
+function patchVnode(oldVnode, vnode){
 	var el = vnode.el = oldVnode.el;
     var i, oldCh = oldVnode.children, ch = vnode.children;
     if (oldVnode === vnode) { return; }
-    if(oldVnode.text && vnode.text){
+    if(oldVnode.text && vnode.text && oldVnode.text !== vnode.text){
+    	api$$1.setTextContent(el, vnode.text);
     }
     //update class attr	
     updateEle(el, vnode, oldVnode);
     if(ch && ch[0].text && ch.length === 1){
     	//it's childern only a textNode
     	if(!oldCh || oldCh.length !== ch.length || oldCh[0].text !== ch[0].text){
-    		//api.setTextContent(el, createEle(ch[0]).text);
     		api$$1.removeChild(el, oldCh[0].el);
     		api$$1.appendChild(el, createEle(ch[0]).el);
     	}
@@ -95,7 +122,7 @@ function patchNode(oldVnode, vnode){
     }
 }
 
-function updateChildren(parent, oldch, ch){
+function updateChildren(parentElm, oldCh, newCh){
 	var oldStartIdx = 0, newStartIdx = 0;
     var oldEndIdx = oldCh.length - 1;
     var oldStartVnode = oldCh[0];
@@ -107,12 +134,77 @@ function updateChildren(parent, oldch, ch){
     var idxInOld;
     var elmToMove;
     var before;
+    while (oldStartIdx <= oldEndIdx && newStartIdx <= newEndIdx) {
+            if (oldStartVnode == null) {
+                oldStartVnode = oldCh[++oldStartIdx]; // Vnode might have been moved left
+            }
+            else if (oldEndVnode == null) {
+                oldEndVnode = oldCh[--oldEndIdx];
+            }
+            else if (newStartVnode == null) {
+                newStartVnode = newCh[++newStartIdx];
+            }
+            else if (newEndVnode == null) {
+                newEndVnode = newCh[--newEndIdx];
+            }
+            else if (sameVnode(oldStartVnode, newStartVnode)) {
+                patchVnode(oldStartVnode, newStartVnode);
+                oldStartVnode = oldCh[++oldStartIdx];
+                newStartVnode = newCh[++newStartIdx];
+            }
+            else if (sameVnode(oldEndVnode, newEndVnode)) {
+                patchVnode(oldEndVnode, newEndVnode);
+                oldEndVnode = oldCh[--oldEndIdx];
+                newEndVnode = newCh[--newEndIdx];
+            }
+            else if (sameVnode(oldStartVnode, newEndVnode)) {
+                patchVnode(oldStartVnode, newEndVnode);
+                api$$1.insertBefore(parentElm, oldStartVnode.el, api$$1.nextSibling(oldEndVnode.el));
+                oldStartVnode = oldCh[++oldStartIdx];
+                newEndVnode = newCh[--newEndIdx];
+            }
+            else if (sameVnode(oldEndVnode, newStartVnode)) {
+                patchVnode(oldEndVnode, newStartVnode);
+                api$$1.insertBefore(parentElm, oldEndVnode.el, oldStartVnode.el);
+                oldEndVnode = oldCh[--oldEndIdx];
+                newStartVnode = newCh[++newStartIdx];
+            }
+            else {
+                if (oldKeyToIdx === undefined) {
+                    oldKeyToIdx = createKeyToOldIdx(oldCh, oldStartIdx, oldEndIdx);
+                }
+                idxInOld = oldKeyToIdx[newStartVnode.key];
+                if (!idxInOld) {
+                    api$$1.insertBefore(parentElm, createEle(newStartVnode).el, oldStartVnode.el);
+                    newStartVnode = newCh[++newStartIdx];
+                }
+                else {
+                    elmToMove = oldCh[idxInOld];
+                    if (elmToMove.sel !== newStartVnode.sel) {
+                        api$$1.insertBefore(parentElm, createEle(newStartVnode).el, oldStartVnode.el);
+                    }
+                    else {
+                        patchVnode(elmToMove, newStartVnode);
+                        oldCh[idxInOld] = undefined;
+                        api$$1.insertBefore(parentElm, elmToMove.el, oldStartVnode.el);
+                    }
+                    newStartVnode = newCh[++newStartIdx];
+                }
+            }
+        }
+        if (oldStartIdx > oldEndIdx) {
+            before = newCh[newEndIdx + 1] == null ? null : newCh[newEndIdx + 1].el;
+            addVnodes(parentElm, before, newCh, newStartIdx, newEndIdx);
+        }
+        else if (newStartIdx > newEndIdx) {
+            removeVnodes(parentElm, oldCh, oldStartIdx, oldEndIdx);
+        }
 }
 
 function patch$$1(oldVnode, vnode){
 	
-	if(sameNode(oldVnode, vnode)){
-		patchNode(oldVnode, vnode);
+	if(sameVnode(oldVnode, vnode)){
+		patchVnode(oldVnode, vnode);
 	}else{
 		var oEl = oldVnode.el;
 		var parentEle = api$$1.parentNode(oEl);
@@ -205,7 +297,6 @@ function createVdom$$1(arg){
 		}
 		i++;
 	}
-	//createEle(vd);// create true dom
 	console.log(vd);
 	return vd;
 }
@@ -231,7 +322,7 @@ function updateEle(e ,vdom, oldVdom){
 	if( (i = vdom.className).length > 0 ) { api$$1.setClass(e, i); }
 	if( (i = vdom.data) !== null ) { api$$1.setAttrs(e, i); }
 	if( (i = vdom.id) !== null ) { api$$1.setId(e, i); }
-	if( (i = vdom.children) !== null ) { api$$1.appendChildren(e, i); }
+	if( (i = vdom.children) !== null && !oldVdom) { api$$1.appendChildren(e, i); }
 }
 
 var api$$1 = Object.create(null);
@@ -269,6 +360,9 @@ if(isBrowser){
 	};
 	api$$1.setId = function(ele, id){
 		ele.id = id;
+	};
+	api$$1.replaceChild = function(parent, newChild, oldChild){
+		parent.replaceChild(newChild, oldChild);
 	};
 	api$$1.appendChildren = function(ele, children){
 		var this$1 = this;

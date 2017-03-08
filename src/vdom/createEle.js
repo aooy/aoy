@@ -20,7 +20,7 @@ export function updateEle(e ,vdom, oldVdom){
 	if( (i = vdom.className).length > 0 ) api.setClass(e, i);
 	if( (i = vdom.data) !== null ) api.setAttrs(e, i);
 	if( (i = vdom.id) !== null ) api.setId(e, i);
-	if( (i = vdom.children) !== null ) api.appendChildren(e, i);
+	if( (i = vdom.children) !== null && !oldVdom) api.appendChildren(e, i);
 }
 
 

@@ -37,6 +37,9 @@ if(isBrowser){
 	api.setId = function(ele, id){
 		ele.id = id;
 	};
+	api.replaceChild = function(parent, newChild, oldChild){
+		parent.replaceChild(newChild, oldChild);
+	};
 	api.appendChildren = function(ele, children){
 		if(ele && isArray(children)){
 			for(let i = 0; i < children.length; i++){

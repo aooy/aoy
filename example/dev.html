@@ -38,9 +38,15 @@
 	// 	patch(d, newD);
 	// },2000)
 /***4. 新的节点的子节点只有一个文本节点 ***/
-	var d = el('div#d.ckk', {class: 'b','data-e':"1", style: {background: 'orange',height:'100px'}}, 'abc' );
+	var d = el('div#d.ckk', {class: 'b','data-e':"1", style: {background: 'orange',height:'100px'}}, ['w',
+	  el('a', 'a'),
+	  el('div', 'd'),
+	  el('t', 't'),] );
 
-	var newD = el('div#cc.eee', {class: 'pp','data-w':"2", style: { background: 'green',height:'100px'}}, '222');
+	var newD = el('div#cc.eee', {class: 'pp','data-w':"2", style: { background: 'green',height:'100px'}}, ['n',
+	  el('t', 't'),
+	  el('p', 'p'),
+	  el('div', 'd')]);
 
 	mount(document.body, d)
 	setTimeout(function(){

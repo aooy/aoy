@@ -66,7 +66,7 @@ function Vdom(){
 }
 
 function sameVnode(oldVnode, vnode){
-	return vnode.tagName === oldVnode.tagName;
+	return vnode.key === oldVnode.key && vnode.sel === oldVnode.sel;
 }
 function createKeyToOldIdx(children, beginIdx, endIdx) {
     var i, map = {}, key, ch;
@@ -248,6 +248,8 @@ function parseData(vdom, v){
 			for(var j = 0; j < i.length; j++){
 				vdom.className.push(i[j]);
 			}
+		}else if(k === 'key'){
+			vdom.key = v[k];
 		}else if(k !== 'style'){
 			vdom.attr.push(k);	
 		}
@@ -405,7 +407,6 @@ if(isBrowser){
 					}
 				}else{
 					this$1.setAttribute(ele, k, s);
-					ele.attributes[k] = s;
 				}
 			}
 		}

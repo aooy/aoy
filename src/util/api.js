@@ -77,7 +77,6 @@ if(isBrowser){
 					}
 				}else{
 					this.setAttribute(ele, k, s);
-					ele.attributes[k] = s;
 				}
 			}
 		}

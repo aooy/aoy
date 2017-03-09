@@ -31,6 +31,8 @@ function parseData(vdom, v){
 			for(let j = 0; j < i.length; j++){
 				vdom.className.push(i[j]);
 			}
+		}else if(k === 'key'){
+			vdom.key = v[k];
 		}else if(k !== 'style'){
 			vdom.attr.push(k);	
 		}

@@ -38,20 +38,51 @@
 	// 	patch(d, newD);
 	// },2000)
 /***4. 新的节点的子节点只有一个文本节点 ***/
-	var d = el('div#d.ckk', {class: 'b','data-e':"1", style: {background: 'orange',height:'100px'}}, ['w',
-	  el('a', 'a'),
-	  el('div', 'd'),
-	  el('t', 't'),] );
+	// var d = el('div#d.ckk', {class: 'b','data-e':"1", style: {background: 'orange',height:'100px'}}, ['w']);
 
-	var newD = el('div#cc.eee', {class: 'pp','data-w':"2", style: { background: 'green',height:'100px'}}, ['n',
-	  el('t', 't'),
-	  el('p', 'p'),
-	  el('div', 'd')]);
+	// var newD = el('div#cc.eee', {class: 'pp','data-w':"2", style: { background: 'green',height:'100px'}}, 'n');
+
+	// mount(document.body, d)
+	// setTimeout(function(){
+	// 	patch(d, newD);
+	// },1500)
+/***5. 新的节点的子节点混乱排序 ***/
+	// var d = el('div#d.ckk', {class: 'b','data-e':"1", style: {background: 'orange',height:'100px'}}, ['w',
+	//   el('a', 'a'),
+	//   el('div', 'd'),
+	//   el('t', 't')] );
+
+	// var newD = el('div#cc.eee', {class: 'pp','data-w':"2", style: { background: 'green',height:'100px'}}, [el('div', 'd'),
+	//   el('t', 't'),
+	//   el('p', {style: {color: 'red'}},'p'),
+	//   ]);
+
+	// mount(document.body, d)
+	// setTimeout(function(){
+	// 	patch(d, newD);
+	// },1500)	
+
+/***6. 子节点带key ***/
+	var d = el('div#d.ckk', {class: 'b','data-e':"1", style: {background: 'orange',height:'100px'}}, [
+	  	el('div',{key: 'c'},'c'),
+	  	el('div',{key: 'b'},'b'),
+	 	el('div',{key: 'a'},'a'),
+	 	el('div','nokey'),
+	 	el('div',{key: 'e'},'e')
+	  ]);
+
+	var newD = el('div#d.ckk', {class: 'pp','data-w':"2", style: { background: 'green',height:'100px'}}, [
+	  el('div','noke'),
+	  el('div',{key: 'a'},'a'),
+	  el('div',{key: 'e'},'e'),
+	  el('div',{key: 'c'},'c'),
+	 	el('div',{key: 'd'},'d')
+	  ]);
 
 	mount(document.body, d)
 	setTimeout(function(){
 		patch(d, newD);
-	},1500)
+	},1500)		
 	console.log(d.el)
 	 
 </script>

@@ -2,7 +2,7 @@ import { api, isArray} from '../util/index'
 import { createEle, updateEle } from './index'
 
 function sameVnode(oldVnode, vnode){
-	return vnode.tagName === oldVnode.tagName;
+	return vnode.key === oldVnode.key && vnode.sel === oldVnode.sel;
 }
 function createKeyToOldIdx(children, beginIdx, endIdx) {
     var i, map = {}, key, ch;

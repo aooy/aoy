@@ -6,7 +6,7 @@ export default {
     buble()
   ],
   entry: 'src/index.js',
-  dest: 'dist/vdom.js',
+  dest: 'dist/aoy.js',
   format: 'umd',
   moduleName: 'index',
   sourceMap: true 

@@ -42,6 +42,7 @@ function parseData(vdom, v){
 
 function parseChindren(vdom, v){
 	let a = [];
+	if(isString(v)) v = [v];
 	for(let i = 0; i < v.length; i++){
 		if(!(v[i] instanceof Vdom)){
 			a.push(createVdomTxt(v[i]));
@@ -55,7 +56,6 @@ export function createVdomTxt(str){
 	let vd = new Vdom();
 	if(isString(str)){
 		vd.text = str;
-		//vd.el = api.createTextNode(str);
 	}
 	return vd;
 }
@@ -72,12 +72,9 @@ export function createVdom(arg){
 			if(isObject(v)){
 				// class style clickEvent .ect
 				parseData(vd, v);
-			}else if(isArray(v)){
+			}else if(isArray(v) || isString(v)){
 				// childern
 				parseChindren(vd, v);
-			}else if(isString(v)){
-				//only textNode
-				parseChindren(vd, [v]);
 			}
 		}
 		i++;

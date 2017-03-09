@@ -10,7 +10,7 @@ function createKeyToOldIdx(children, beginIdx, endIdx) {
         ch = children[i];
         if (ch != null) {
             key = ch.key;
-            if (key !== undefined)
+            if (key !== null)
                 map[key] = i;
         }
     }
@@ -121,7 +121,7 @@ function updateChildren(parentElm, oldCh, newCh){
                     }
                     else {
                         patchVnode(elmToMove, newStartVnode);
-                        oldCh[idxInOld] = undefined;
+                        oldCh[idxInOld] = null;
                         api.insertBefore(parentElm, elmToMove.el, oldStartVnode.el);
                     }
                     newStartVnode = newCh[++newStartIdx];

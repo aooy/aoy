@@ -10,4 +10,5 @@ export function Vdom(){
 		this.key = null;
 		this.text = null;
 		this.attr = [];
+		this.store = null;
 }

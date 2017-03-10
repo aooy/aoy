@@ -63,6 +63,7 @@ function Vdom(){
 		this.key = null;
 		this.text = null;
 		this.attr = [];
+		this.store = null;
 }
 
 function sameVnode(oldVnode, vnode){
@@ -317,7 +318,7 @@ function createEle(vdom){
 
 function updateEle(e ,vdom, oldVdom){
 	var i;
-	if( (i = oldVdom) && i.attr.length > 0 ) { api$$1.removeAttrs(i); }
+	//if( (i = oldVdom) && i.attr.length > 0 ) api.removeAttrs(i);
 	if( (i = vdom.className).length > 0 ) { api$$1.setClass(e, i); }
 	if( (i = vdom.data) !== null ) { api$$1.setAttrs(e, i); }
 	if( (i = vdom.id) !== null ) { api$$1.setId(e, i); }
@@ -391,8 +392,6 @@ if(isBrowser){
 		}
 	};
 	api$$1.setAttrs = function(ele, a){
-		var this$1 = this;
-
 		if(ele && isObject(a)){
 
 			for(var k in a){
@@ -403,7 +402,7 @@ if(isBrowser){
 						ele.style[j] = s[j];
 					}
 				}else{
-					this$1.setAttribute(ele, k, s);
+					ele[k] = s;
 				}
 			}
 		}
@@ -429,16 +428,108 @@ if(isBrowser){
 	error("There is not in browser's env");
 }
 
+function injectStore(store, key, data){
+	if(isObject(data)){
+		store[key] = data;
+		var archiver = new Archiver(data);
+		for(var key$1 in data){
+			archiver(key$1);
+		}
+	}else{
+		error('Data parameter must be a object');
+		return;
+	}
+}
+
+function Archiver(data) {
+  var storage = Object.create(null);
+  //let archive = [];
+  this.getStore = function() { return storage; };
+  return function(key){
+  		storage[key] = data[key];
+	  	Object.defineProperty(data, key, {
+		    get: function() {
+		      console.log('get');
+		      return storage[key];
+		    },
+		    set: function(value) {
+		      console.log('set');
+		      storage[key] = value;
+		    }
+		  });
+		}
+}
+
+function initStore$$1(){
+	var STORE = new Store$$1();
+	var archiver;
+	if(this instanceof Aoy && !this._FINALSTORE){
+		Object.defineProperty(this, 'store', {
+			set: function(value){
+				warn('Not allowed to modify store');
+			},
+			get: function(){
+				console.log('get:取得store');
+				return STORE;
+			}
+		});
+		Object.defineProperty(this, '_FINALSTORE', {
+			value: true
+		});
+	}else{
+		warn('Not Aoy instance or Already init store');
+	}
+	//return STORE;
+	return this;
+}
+
+function Store$$1(){
+	var mainStore = {};
+	this.add = function(){
+		var arg = toArray(arguments);
+		if(arg.length > 0){
+		  var iskey = isString(arg[0]);
+		  var isdata = isObject(arg[1]);
+		  if(iskey && isdata){
+		  		//mainStore[arg[0]] = arg[1];
+		  		injectStore(mainStore, arg[0], arg[1]);
+			}else if(isdata){
+				//mainStore['_DEFAULT'] = arg[1];	
+				injectStore(mainStore, '_DEFAULT', arg[1]);
+			}else{
+				error('Missing key or data parameter');
+			}
+		}
+		
+	};
+
+	this.get = function(key){
+		return mainStore[key];
+	};
+
+	this.set = function(){
+		
+	};
+
+	this.remove = function(){
+
+	};
+}
+
 function baseInit(Aoy){
 	Aoy.prototype._init = function(arg){
+		this._initStore();
 		if(arg.length === 0){
-			warn('初始化参数不能为空');
+			//warn('初始化参数不能为空')
 			return;
 		}
 		if(isArray(arg) && arg.length > 0) {
 			var op = parseOption.call(this,arg);
 		}	
 	};
+
+	Aoy.prototype._initStore = initStore$$1;
+
 	window.el = function(){
 		var arg = toArray(arguments);
 
@@ -452,24 +543,24 @@ function baseInit(Aoy){
 	};
 	window.mount = function(parent,vdom){
 		var d = createEle(vdom);
-		//document.body.appendChild(d.el)
 		api$$1.appendChild(parent, d.el);
 	};
 	window.patch = patch$$1;
+
 }
 
-function Aoy(){
-	if(this instanceof Aoy){
+function Aoy$1(){
+	if(this instanceof Aoy$1){
 		var arg = toArray(arguments);
 		this._init(arg);
 	}	
 }
 
-baseInit(Aoy);
+baseInit(Aoy$1);
 
-if(isBrowser) { window.Aoy = Aoy; }
+if(isBrowser) { window.Aoy = Aoy$1; }
 
-exports.Aoy = Aoy;
+exports.Aoy = Aoy$1;
 
 Object.defineProperty(exports, '__esModule', { value: true });
 

@@ -76,7 +76,7 @@ if(isBrowser){
 						ele.style[j] = s[j];
 					}
 				}else{
-					this.setAttribute(ele, k, s);
+					ele[k] = s;
 				}
 			}
 		}

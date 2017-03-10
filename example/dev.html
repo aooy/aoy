@@ -2,6 +2,7 @@
 <html>
 <head>
 	<title>开发dome</title>
+	<meta charset="utf-8">
 	<script type="text/javascript" src="../dist/aoy.js"></script>
 </head>
 <body>
@@ -63,29 +64,89 @@
 	// },1500)	
 
 /***6. 子节点带key ***/
-	var d = el('div#d.ckk', {class: 'b','data-e':"1", style: {background: 'orange',height:'100px'}}, [
-	  	el('div',{key: 'c'},'c'),
-	  	el('div',{key: 'b'},'b'),
-	 	el('div',{key: 'a'},'a'),
-	 	el('div','nokey'),
-	 	el('div',{key: 'e'},'e')
-	  ]);
+	// var d = el('div#d.ckk', {class: 'b','data-e':"1", style: {background: 'orange',height:'100px'}}, [
+	//   	el('div',{key: 'c'},'c'),
+	//   	el('div',{key: 'b'},'b'),
+	//  	el('div',{key: 'a'},'a'),
+	//  	el('div','nokey'),
+	//  	el('div',{key: 'e'},'e')
+	//   ]);
 
-	var newD = el('div#d.ckk', {class: 'pp','data-w':"2", style: { background: 'green',height:'100px'}}, [
-	  el('div','noke'),
-	  'qq',
-	  el('div',{key: 'a'},'a'),
-	  el('div',{key: 'e'},'e'),
-	  el('div',{key: 'c'},'c'),
-	 	el('div',{key: 'd'},'d')
-	  ]);
+	// var newD = el('div#d.ckk', {class: 'pp','data-w':"2", style: { background: 'green',height:'100px'}}, [
+	//   el('div','noke'),
+	//   'qq',
+	//   el('div',{key: 'a'},'a'),
+	//   el('div',{key: 'e'},'e'),
+	//   el('div',{key: 'c'},'c'),
+	//  	el('div',{key: 'd'},'d')
+	//   ]);
 
-	mount(document.body, d)
+	// mount(document.body, d)
+	// setTimeout(function(){
+	// 	patch(d, newD);
+	// },1500)		
+	// console.log(d.el)
+/***6. 绑定数据 ***/
+	var data = {
+		txt: 'my first Component',
+		color: 'red',
+		a: 1
+	};
+	function aa(){
+		alert(1)
+	}
+	function mycp(){
+		this.store = data;
+		this.el = el('div#d.ckk', { class: 'pp','data-w': this.store.a, style: { background: this.store.color,height:'100px'},onclick:aa }, [el('div',this.store.txt)]);
+	}
+	var cp = new mycp();
+	mount(document.body, cp.el)
 	setTimeout(function(){
-		patch(d, newD);
-	},1500)		
-	console.log(d.el)
-	 
-</script>
+		data.color = 'blue';
+		data.a = 2;
+		var ncp = new mycp();
+		patch(cp.el, ncp.el);
+	},1000)
+
+ 	var ober = {a:1};
+ 	Object.defineProperty(ober, 'a',{
+ 		set: function(){
+ 			console.warn(111)
+ 		}
+ 	}
+ 	);
+ 	
+ 	var as = new Aoy();
+ 	var asStore = as.store;
+
+	asStore.add('myc',{
+		a: '1',
+		b: '2'
+	});
+	asStore.get('myc');
+
+
+
+
+ </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -86,48 +86,63 @@
 	// 	patch(d, newD);
 	// },1500)		
 	// console.log(d.el)
-/***6. 绑定数据 ***/
-	var data = {
-		txt: 'my first Component',
-		color: 'red',
-		a: 1
-	};
-	function aa(){
-		alert(1)
-	}
-	function mycp(){
-		this.store = data;
-		this.el = el('div#d.ckk', { class: 'pp','data-w': this.store.a, style: { background: this.store.color,height:'100px'},onclick:aa }, [el('div',this.store.txt)]);
-	}
-	var cp = new mycp();
-	mount(document.body, cp.el)
-	setTimeout(function(){
-		data.color = 'blue';
-		data.a = 2;
-		var ncp = new mycp();
-		patch(cp.el, ncp.el);
-	},1000)
+/***6. 绑定数据的store ***/
+	// var data = {
+	// 	txt: 'my first Component',
+	// 	color: 'red',
+	// 	a: 1
+	// };
+	// function aa(){
+	// 	alert(1)
+	// }
+	// function mycp(){
+	// 	this.store = data;
+	// 	this.el = el('div#d.ckk', { class: 'pp','data-w': this.store.a, style: { background: this.store.color,height:'100px'},onclick:aa }, [el('div',this.store.txt)]);
+	// }
+	// var cp = new mycp();
+	// mount(document.body, cp.el)
+	// setTimeout(function(){
+	// 	data.color = 'blue';
+	// 	data.a = 2;
+	// 	var ncp = new mycp();
+	// 	patch(cp.el, ncp.el);
+	// },1000)
 
- 	var ober = {a:1};
- 	Object.defineProperty(ober, 'a',{
- 		set: function(){
- 			console.warn(111)
- 		}
- 	}
- 	);
- 	
- 	var as = new Aoy();
- 	var asStore = as.store;
+ // 	var ober = {a:1};
+ // 	Object.defineProperty(ober, 'a',{
+ // 		set: function(){
+ // 			console.warn(111)
+ // 		}
+ // 	}
+ // 	);
 
-	asStore.add('myc',{
-		a: '1',
-		b: '2'
+ // 	var as = new Aoy();
+ // 	var asStore = as.store;
+
+	// var myc = asStore.add('myc',{
+	// 	a: '1',
+	// 	b: '2'
+	// });
+	// myc.set({a:111});
+	// myc.set({c:3333});
+	// myc.c = 44444;
+	// console.warn(myc.a, myc.c)
+/***7. 绑定数据的store ***/
+	var ao = new Aoy();
+	var mycp = ao.createComponent({
+		render:function(){
+			return el('div','test mcp');
+		}
 	});
-	asStore.get('myc');
-
-
-
-
+	console.warn(mycp.store)
+	console.warn(ao)
+	var mycp2 = ao.createComponent({
+		render:function(){
+			return el('div','test mcp');
+		}
+	});
+	console.warn(mycp2.store)
+	console.warn(ao)
  </script>
 </body>
 </html>

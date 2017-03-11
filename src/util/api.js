@@ -40,6 +40,9 @@ if(isBrowser){
 	api.replaceChild = function(parent, newChild, oldChild){
 		parent.replaceChild(newChild, oldChild);
 	};
+	api.defineProperty = function(obj, prop, descriptor){
+		Object.defineProperty(obj, prop, descriptor);
+	}
 	api.appendChildren = function(ele, children){
 		if(ele && isArray(children)){
 			for(let i = 0; i < children.length; i++){

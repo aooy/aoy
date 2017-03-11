@@ -1,7 +1,7 @@
 import { isArray, error, toArray, api, warn }  from '../util/index'
 import { createVdom, createEle, patch }  from '../vdom/index'
 import { injectStore, initStore } from '../store/index'
-
+import { createComponent } from '../component/index'
 export function baseInit(Aoy){
 	Aoy.prototype._init = function(arg){
 		this._initStore();
@@ -15,6 +15,8 @@ export function baseInit(Aoy){
 	}
 
 	Aoy.prototype._initStore = initStore;
+	
+	Aoy.prototype.createComponent = createComponent;
 
 	window.el = function(){
 		const arg = toArray(arguments);

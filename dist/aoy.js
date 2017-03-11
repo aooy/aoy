@@ -364,6 +364,9 @@ if(isBrowser){
 	api$$1.replaceChild = function(parent, newChild, oldChild){
 		parent.replaceChild(newChild, oldChild);
 	};
+	api$$1.defineProperty = function(obj, prop, descriptor){
+		Object.defineProperty(obj, prop, descriptor);
+	};
 	api$$1.appendChildren = function(ele, children){
 		var this$1 = this;
 
@@ -428,10 +431,13 @@ if(isBrowser){
 	error("There is not in browser's env");
 }
 
+var sid = -1;
 function injectStore(store, key, data){
+	var archiver;
 	if(isObject(data)){
+		if(store.hasOwnProperty(key)) { sid++; }
 		store[key] = data;
-		var archiver = new Archiver(data);
+		archiver = new Archiver(data, sid);
 		for(var key$1 in data){
 			archiver(key$1);
 		}
@@ -439,25 +445,43 @@ function injectStore(store, key, data){
 		error('Data parameter must be a object');
 		return;
 	}
+	return data;
 }
 
 function Archiver(data) {
-  var storage = Object.create(null);
-  //let archive = [];
-  this.getStore = function() { return storage; };
+  var storage = {};
+  var des  = function(key){
+	  return {
+	  		  get: function() {
+			      console.log('get:'+key);
+			      return storage[key];
+			    },
+			  set: function(value) {
+			      console.log('set'+key);
+			      storage[key] = value;
+			    }
+	  		};
+  };
+  api$$1.defineProperty(data, 'set', {
+  	value: function(){
+  		var o;
+  		if(isObject(o = arguments[0])){
+  			for(var k in o){
+  				if(!storage.hasOwnProperty(k)){
+  					console.log('new key');
+  					api$$1.defineProperty(data, k, des(k));
+  				}
+  				storage[k] = o[k];
+  			}
+  		}else{
+  			error("set function's parameter must be a object");
+  		}
+  	}
+  });
   return function(key){
   		storage[key] = data[key];
-	  	Object.defineProperty(data, key, {
-		    get: function() {
-		      console.log('get');
-		      return storage[key];
-		    },
-		    set: function(value) {
-		      console.log('set');
-		      storage[key] = value;
-		    }
-		  });
-		}
+	  	api$$1.defineProperty(data, key, des(key));
+	}
 }
 
 function initStore$$1(){
@@ -487,33 +511,68 @@ function Store$$1(){
 	var mainStore = {};
 	this.add = function(){
 		var arg = toArray(arguments);
+		var subStore;
 		if(arg.length > 0){
 		  var iskey = isString(arg[0]);
 		  var isdata = isObject(arg[1]);
 		  if(iskey && isdata){
-		  		//mainStore[arg[0]] = arg[1];
-		  		injectStore(mainStore, arg[0], arg[1]);
-			}else if(isdata){
-				//mainStore['_DEFAULT'] = arg[1];	
-				injectStore(mainStore, '_DEFAULT', arg[1]);
+		  		subStore = injectStore(mainStore, arg[0], arg[1]);
+			}else if(isdata){	
+				subStore = injectStore(mainStore, '_DEFAULT', arg[1]);
 			}else{
 				error('Missing key or data parameter');
 			}
 		}
-		
+		return subStore;
 	};
 
 	this.get = function(key){
+		if(key === undefined){
+			key = '_DEFAULT';
+		}
 		return mainStore[key];
 	};
 
 	this.set = function(){
+
+	};
+
+	this.remove = function(key){
+		if(key === undefined){
+			key = '_DEFAULT';
+		}
+		delete mainStore[key];
+	};
+
+	this.connect = function(){
 		
 	};
+}
 
-	this.remove = function(){
+var uid = 0;
 
-	};
+function createComponent(cp){
+	var c;
+	var _this = this;
+	var cid = uid++;
+	return function(){
+		if(isObject(cp)){
+			c = new function(){
+				return cp;
+			};
+			api$$1.defineProperty(c, 'store', {
+				get: function(){
+					console.log(cid+':');
+					_this.__CALLSTORECID__ = cid;
+					return _this.store;
+				}
+			});
+			api$$1.defineProperty(c, '_UID', {
+				value: cid
+			});
+		}
+		return c;
+	}();
 }
 
 function baseInit(Aoy){
@@ -529,6 +588,8 @@ function baseInit(Aoy){
 	};
 
 	Aoy.prototype._initStore = initStore$$1;
+	
+	Aoy.prototype.createComponent = createComponent;
 
 	window.el = function(){
 		var arg = toArray(arguments);

@@ -1,14 +1,12 @@
 import { isObject, error, api, warn } from '../util/index'
-
-let sid = -1;
-export function injectStore(store, key, data){
+import { patch } from '../vdom/index'
+export function injectStore(store, key, data, context){
 	let archiver;
 	if(isObject(data)){
-		if(store.hasOwnProperty(key)) sid++;
 		store[key] = data;
-		archiver = new Archiver(data, sid);
-		for(let key in data){
-			archiver(key);
+		archiver = new Archiver(data,key,context);
+		for(let k in data){
+			archiver(k);
 		}
 	}else{
 		error('Data parameter must be a object');
@@ -17,17 +15,27 @@ export function injectStore(store, key, data){
 	return data;
 }
 
-function Archiver(data) {
+function Archiver(data, sname, context) {
+  let c;
   let storage = {};
+  let cm = context.componentManage;
   let des  = function(key){
 	  return {
 	  		  get: function() {
-			      console.log('get:'+key)
+			      console.log('get:'+key+';sname:'+sname+';store', context)
 			      return storage[key];
 			    },
 			  set: function(value) {
-			      console.log('set'+key)
+			      console.log('set'+key+';sname:'+sname)
 			      storage[key] = value;
+			      if(c = cm[sname]){
+			   			c.forEach(function(v, i){
+			   				let newVn = v.render();
+			   				patch(v.vdom, newVn);
+			   				v.vdom = newVn;
+			   			});
+			      	console.log('有组件依赖此属性',cm[sname])
+			      }
 			    }
 	  		};
   }

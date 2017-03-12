@@ -1,9 +1,10 @@
-import { toArray, isString, isObject, error } from '../util/index'
+import { toArray, isString, isObject, error, api } from '../util/index'
 import { injectStore } from './index'
 
 
 export function Store(){
 	let mainStore = {};
+	this.componentManage = {};
 	this.add = function(){
 		const arg = toArray(arguments);
 		let subStore;
@@ -11,9 +12,9 @@ export function Store(){
 		  const iskey = isString(arg[0]);
 		  const isdata = isObject(arg[1]);
 		  if(iskey && isdata){
-		  		subStore = injectStore(mainStore, arg[0], arg[1]);
+		  		subStore = injectStore(mainStore, arg[0], arg[1], this);
 			}else if(isdata){	
-				subStore = injectStore(mainStore, '_DEFAULT', arg[1]);
+				subStore = injectStore(mainStore, '_DEFAULT', arg[1], this);
 			}else{
 				error('Missing key or data parameter');
 			}
@@ -28,6 +29,10 @@ export function Store(){
 		return mainStore[key];
 	};
 
+	this.getMainStore = function(){
+		return mainStore;
+	};
+
 	this.set = function(){
 
 	};
@@ -37,10 +42,6 @@ export function Store(){
 			key = '_DEFAULT';
 		}
 		delete mainStore[key];
-	};
-
-	this.connect = function(){
-		
 	};
 }
 

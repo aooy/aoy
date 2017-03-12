@@ -129,20 +129,34 @@
 	// console.warn(myc.a, myc.c)
 /***7. 绑定数据的store ***/
 	var ao = new Aoy();
+	var asStore = ao.store;
+
+	asStore.add('a',{
+		e: '1',
+		d: '2'
+	});
+	asStore.add('b',{
+		g: 'mcp2111',
+		t: '2'
+	});
 	var mycp = ao.createComponent({
+		el: document.body,
 		render:function(){
-			return el('div','test mcp');
+			return el('div','test mcp1');
 		}
 	});
-	console.warn(mycp.store)
-	console.warn(ao)
+	console.log(mycp)
+	ao.connect(mycp, 'a')
+	console.log(mycp.a.e)
 	var mycp2 = ao.createComponent({
+		el: document.body,
 		render:function(){
-			return el('div','test mcp');
+			return el('div',this.b.g);
 		}
 	});
-	console.warn(mycp2.store)
-	console.warn(ao)
+	console.log(mycp)
+	ao.connect(mycp2, 'b')
+	console.log(mycp2.b.t)
  </script>
 </body>
 </html>

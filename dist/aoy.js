@@ -431,15 +431,13 @@ if(isBrowser){
 	error("There is not in browser's env");
 }
 
-var sid = -1;
-function injectStore(store, key, data){
+function injectStore(store, key, data, context){
 	var archiver;
 	if(isObject(data)){
-		if(store.hasOwnProperty(key)) { sid++; }
 		store[key] = data;
-		archiver = new Archiver(data, sid);
-		for(var key$1 in data){
-			archiver(key$1);
+		archiver = new Archiver(data,key,context);
+		for(var k in data){
+			archiver(k);
 		}
 	}else{
 		error('Data parameter must be a object');
@@ -448,17 +446,27 @@ function injectStore(store, key, data){
 	return data;
 }
 
-function Archiver(data) {
+function Archiver(data, sname, context) {
+  var c;
   var storage = {};
+  var cm = context.componentManage;
   var des  = function(key){
 	  return {
 	  		  get: function() {
-			      console.log('get:'+key);
+			      console.log('get:'+key+';sname:'+sname+';store', context);
 			      return storage[key];
 			    },
 			  set: function(value) {
-			      console.log('set'+key);
+			      console.log('set'+key+';sname:'+sname);
 			      storage[key] = value;
+			      if(c = cm[sname]){
+			   			c.forEach(function(v, i){
+			   				var newVn = v.render();
+			   				patch$$1(v.vdom, newVn);
+			   				v.vdom = newVn;
+			   			});
+			      	console.log('有组件依赖此属性',cm[sname]);
+			      }
 			    }
 	  		};
   };
@@ -509,6 +517,7 @@ function initStore$$1(){
 
 function Store$$1(){
 	var mainStore = {};
+	this.componentManage = {};
 	this.add = function(){
 		var arg = toArray(arguments);
 		var subStore;
@@ -516,9 +525,9 @@ function Store$$1(){
 		  var iskey = isString(arg[0]);
 		  var isdata = isObject(arg[1]);
 		  if(iskey && isdata){
-		  		subStore = injectStore(mainStore, arg[0], arg[1]);
+		  		subStore = injectStore(mainStore, arg[0], arg[1], this);
 			}else if(isdata){	
-				subStore = injectStore(mainStore, '_DEFAULT', arg[1]);
+				subStore = injectStore(mainStore, '_DEFAULT', arg[1], this);
 			}else{
 				error('Missing key or data parameter');
 			}
@@ -533,6 +542,10 @@ function Store$$1(){
 		return mainStore[key];
 	};
 
+	this.getMainStore = function(){
+		return mainStore;
+	};
+
 	this.set = function(){
 
 	};
@@ -543,29 +556,20 @@ function Store$$1(){
 		}
 		delete mainStore[key];
 	};
-
-	this.connect = function(){
-		
-	};
 }
 
 var uid = 0;
 
-function createComponent(cp){
+function createComponent$$1(cp){
 	var c;
 	var _this = this;
 	var cid = uid++;
 	return function(){
+		var aoy = _this;
 		if(isObject(cp)){
-			c = new function(){
-				return cp;
-			};
-			api$$1.defineProperty(c, 'store', {
-				get: function(){
-					console.log(cid+':');
-					_this.__CALLSTORECID__ = cid;
-					return _this.store;
-				}
+			c = new Component(cp);
+			api$$1.defineProperty(c, 'aoy', {
+				value: _this
 			});
 			api$$1.defineProperty(c, '_UID', {
 				value: cid
@@ -575,9 +579,76 @@ function createComponent(cp){
 	}();
 }
 
+function Component(op){
+	var this$1 = this;
+
+	//let origin = {};
+	if(isObject(op)){
+		//Object.assign(origin, op);
+		for(var k in op){
+			this$1[k] = op[k];
+		}
+	}
+	//return origin;
+}
+
+function connect(component, storeName){
+	var c;
+	var store = this.store;
+	var getStore = store.get;
+	var cid = component._UID;
+	if( c = store.componentManage[storeName]){
+		c = c.push(component);
+	}else{
+		store.componentManage[storeName] = [component];
+	}
+	
+
+	var _this = this;
+	var fn = function(com, key){
+		_this._dependent(cid, key);
+		api$$1.defineProperty(com, key, {
+				get: function(){
+					return getStore(key);
+				} 
+			});
+	};
+
+	if(component instanceof Component){
+		if(isString(storeName)){
+			fn(component, storeName);
+		}else if(isArray(storeName)){
+			for(var i =0; i < storeName.length; i++ ){
+				fn(component, storeName[i]);
+			}
+		}
+		//render vdom
+		this.mount(component.el, component);
+	}
+}
+
+function dependent(cid, sname){
+	var i = this.dependManage[cid];
+	if(i && i.length>0){
+		i.push(sname);
+	}else{
+		this.dependManage[cid] = [sname];
+	}
+}
+
+function mount(parent,component){
+	var vnode = component.render();
+	component.vdom = vnode;
+	var d = createEle(vnode);
+	api$$1.appendChild(parent, d.el);
+}
+
 function baseInit(Aoy){
 	Aoy.prototype._init = function(arg){
+
+		this.dependManage = Object.create(null);
 		this._initStore();
+
 		if(arg.length === 0){
 			//warn('初始化参数不能为空')
 			return;
@@ -588,9 +659,15 @@ function baseInit(Aoy){
 	};
 
 	Aoy.prototype._initStore = initStore$$1;
-	
-	Aoy.prototype.createComponent = createComponent;
 
+	Aoy.prototype.createComponent = createComponent$$1;
+
+	Aoy.prototype.connect = connect;
+
+	Aoy.prototype._dependent = dependent;
+
+	Aoy.prototype.mount = mount;
+	
 	window.el = function(){
 		var arg = toArray(arguments);
 

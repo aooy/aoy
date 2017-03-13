@@ -28,7 +28,7 @@ function addVnodes(parentElm, before, vnodes, startIdx, endIdx) {
         for (; startIdx <= endIdx; ++startIdx) {
             var ch = vnodes[startIdx];
             if (ch != null) {
-                api.insertBefore(parentElm, createElm(ch, insertedVnodeQueue), before);
+                api.insertBefore(parentElm, createEle(ch).el, before);
             }
         }
     }    

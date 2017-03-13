@@ -11,7 +11,6 @@ export function connect(component, storeName){
 	}else{
 		store.componentManage[storeName] = [component];
 	}
-	
 
 	let _this = this;
 	let fn = function(com, key){

@@ -138,6 +138,7 @@
 	asStore.add('b',{
 		g: 1,
 		t: '2',
+		open: true
 	});
 	var mycp = ao.createComponent({
 		el: document.body,
@@ -157,7 +158,10 @@
 			});
 		},
 		render:function(){
-			return el('div',[this.b.g , el('input', {type: 'button',value: 'add', onclick: this.fn.bind(this)})]);
+			if(this.b.open){ 
+				return el('div',['open']);
+			 }
+			return el('a',[this.b.g]);
 		}
 	});
 	// console.log(mycp)

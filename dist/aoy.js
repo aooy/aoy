@@ -31,7 +31,9 @@ function isObject(o){
 	return judge(o) === '[object Object]';
 }
 
-	
+function isFunction(f){
+	return typeof f === 'function';
+}	
 
 function isString(s){
 	return typeof s === 'string';
@@ -95,7 +97,7 @@ function addVnodes(parentElm, before, vnodes, startIdx, endIdx) {
         for (; startIdx <= endIdx; ++startIdx) {
             var ch = vnodes[startIdx];
             if (ch != null) {
-                api$$1.insertBefore(parentElm, createElm(ch, insertedVnodeQueue), before);
+                api$$1.insertBefore(parentElm, createEle(ch).el, before);
             }
         }
     }    
@@ -610,7 +612,6 @@ function connect(component, storeName){
 	}else{
 		store.componentManage[storeName] = [component];
 	}
-	
 
 	var _this = this;
 	var fn = function(com, key){
@@ -645,10 +646,18 @@ function dependent(cid, sname){
 }
 
 function mount(parent,component){
+	var i;
+	if((i = component.willMount) && isFunction(i)){
+		i.call(component);
+	}
 	var vnode = component.render();
-	component.vdom = vnode;
 	var d = createEle(vnode);
+	if((i = component.didMount) && isFunction(i)){
+		i.call(component);
+	}
+	component.vdom = vnode;
 	api$$1.appendChild(parent, d.el);
+
 }
 
 function baseInit(Aoy){

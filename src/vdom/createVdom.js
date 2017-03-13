@@ -42,7 +42,7 @@ function parseData(vdom, v){
 
 function parseChindren(vdom, v){
 	let a = [];
-	if(isString(v)) v = [v];
+	if(isString(v) || isNumber(v)) v = [v];
 	for(let i = 0; i < v.length; i++){
 		if(!(v[i] instanceof Vdom)){
 			a.push(createVdomTxt(v[i]));
@@ -54,7 +54,7 @@ function parseChindren(vdom, v){
 }
 export function createVdomTxt(str){
 	let vd = new Vdom();
-	if(isString(str)){
+	if(isString(str) || isNumber(str)){
 		vd.text = str;
 	}
 	return vd;

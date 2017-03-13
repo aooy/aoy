@@ -37,7 +37,9 @@ function isString(s){
 	return typeof s === 'string';
 }
 
-
+function isNumber(n){
+	return typeof n === 'number';
+}
 
 
 
@@ -260,7 +262,7 @@ function parseData(vdom, v){
 
 function parseChindren(vdom, v){
 	var a = [];
-	if(isString(v)) { v = [v]; }
+	if(isString(v) || isNumber(v)) { v = [v]; }
 	for(var i = 0; i < v.length; i++){
 		if(!(v[i] instanceof Vdom)){
 			a.push(createVdomTxt$$1(v[i]));
@@ -272,7 +274,7 @@ function parseChindren(vdom, v){
 }
 function createVdomTxt$$1(str){
 	var vd = new Vdom();
-	if(isString(str)){
+	if(isString(str) || isNumber(str)){
 		vd.text = str;
 	}
 	return vd;
@@ -450,6 +452,14 @@ function Archiver(data, sname, context) {
   var c;
   var storage = {};
   var cm = context.componentManage;
+  var devc = function(c){
+		c.forEach(function(v, i){
+			var newVn = v.render();
+			patch$$1(v.vdom, newVn);
+			v.vdom = newVn;
+		});
+  	    console.log('有组件依赖此属性',cm[sname]);
+  };
   var des  = function(key){
 	  return {
 	  		  get: function() {
@@ -460,12 +470,7 @@ function Archiver(data, sname, context) {
 			      console.log('set'+key+';sname:'+sname);
 			      storage[key] = value;
 			      if(c = cm[sname]){
-			   			c.forEach(function(v, i){
-			   				var newVn = v.render();
-			   				patch$$1(v.vdom, newVn);
-			   				v.vdom = newVn;
-			   			});
-			      	console.log('有组件依赖此属性',cm[sname]);
+			   		 devc(c);
 			      }
 			    }
 	  		};
@@ -480,6 +485,9 @@ function Archiver(data, sname, context) {
   					api$$1.defineProperty(data, k, des(k));
   				}
   				storage[k] = o[k];
+  				if(c = cm[sname]){
+			   		 devc(c);
+			    }
   			}
   		}else{
   			error("set function's parameter must be a object");

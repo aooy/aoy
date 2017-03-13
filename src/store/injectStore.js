@@ -19,6 +19,14 @@ function Archiver(data, sname, context) {
   let c;
   let storage = {};
   let cm = context.componentManage;
+  let devc = function(c){
+		c.forEach(function(v, i){
+			let newVn = v.render();
+			patch(v.vdom, newVn);
+			v.vdom = newVn;
+		});
+  	    console.log('有组件依赖此属性',cm[sname])
+  };
   let des  = function(key){
 	  return {
 	  		  get: function() {
@@ -29,16 +37,11 @@ function Archiver(data, sname, context) {
 			      console.log('set'+key+';sname:'+sname)
 			      storage[key] = value;
 			      if(c = cm[sname]){
-			   			c.forEach(function(v, i){
-			   				let newVn = v.render();
-			   				patch(v.vdom, newVn);
-			   				v.vdom = newVn;
-			   			});
-			      	console.log('有组件依赖此属性',cm[sname])
+			   		 devc(c);
 			      }
 			    }
 	  		};
-  }
+  };
   api.defineProperty(data, 'set', {
   	value: function(){
   		let o;
@@ -49,6 +52,9 @@ function Archiver(data, sname, context) {
   					api.defineProperty(data, k, des(k));
   				}
   				storage[k] = o[k];
+  				if(c = cm[sname]){
+			   		 devc(c);
+			    }
   			}
   		}else{
   			error("set function's parameter must be a object");

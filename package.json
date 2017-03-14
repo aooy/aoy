@@ -17,6 +17,7 @@
     "coveralls": "^2.11.9",
     "istanbul": "^1.0.0-alpha.2",
     "mocha": "*",
+    "rollup": "^0.41.5",
     "rollup-plugin-buble": "~0.15.0",
     "rollup-watch": "^3.2.2"
   }

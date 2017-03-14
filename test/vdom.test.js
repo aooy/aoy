@@ -1,6 +1,12 @@
 import { expect } from 'chai'
-import { createVdom, Vdom, el } from '../src/vdom/index'
+import { api } from '../src/util/index'
+import { createVdom, Vdom, el, createVdomTxt, createEle, updateEle } from '../src/vdom/index'
 
+import sinon from 'sinon';
+
+let oldDocument = global.document;
+global.document = {};
+global.window = {}; 
 describe('createVdom function test: ', function() {
 
   	it('return Vdom instanceof',function(){
@@ -113,3 +119,102 @@ describe('createVdom function test: ', function() {
   	});
 
 });
+
+
+describe('createVdomTxt function test: ', function() {
+    it('return Vdom instanceof',function(){
+      expect(createVdomTxt('123')).to.be.instanceof(Vdom);
+      expect(createVdomTxt(123)).to.be.instanceof(Vdom);
+    });
+    it('test Vdom\'text attr',function(){
+      expect(createVdomTxt('123').text).to.be.equal('123');
+      expect(createVdomTxt(123).text).to.be.equal(123);
+    });
+});
+ 
+
+
+describe('createEle function test: ', function() {
+
+
+    it('use createEle fn to create text dom',function(){
+      // let spy0 = sinon.spy();
+      // let spy3 = sinon.spy();
+      // let spy2 = document.createTextNode = sinon.spy();
+      // let spy1 = document.createElement = sinon.stub().returns({
+      //   setAttribute: {},
+      //   appendChild: {},
+      //   style: {}
+      // });
+      let vdom = {
+            el: null,
+            text: '123',
+            tagName:null
+      };
+      let spy0 = api.createTextNode = sinon.spy();
+      //expect(createEle(vdom0)).to.be.instanceof(Vdom);
+      let dom = createEle(vdom);
+      expect(spy0.calledWith('123')).to.be.ok;
+
+      let spy1 = api.createTextNode = sinon.stub().returns({
+        nodeType: 3
+      });
+      dom = createEle(vdom);
+      expect(dom.el.nodeType).to.be.equal(3);
+
+    });
+
+    it('use createEle fn with vdom\' tagName create text dom',function(){
+        let vdom = {
+            el: null,
+            text: null,
+            tagName: 'DIV',
+            className: [],
+            id: null
+        };  
+        let spy0 = document.createElement = sinon.spy();  
+        let spy1 = api.createElement = sinon.spy();  
+        let spy2 = api.setClass = sinon.spy();
+        let spy3 = api.setAttrs = sinon.spy();
+        let spy4 = api.setId = sinon.spy();
+        let spy5 = api.appendChildren = sinon.spy();
+        let dom = createEle(vdom);
+        expect(spy1.calledWith('DIV')).to.be.ok;
+    })
+
+    it('test updateEle fn',function(){
+        let e = {};
+        let vdom = {
+            el: {},
+            text: null,
+            tagName: 'DIV',
+            className: ['a','b'],
+            id: 'myid',
+            data: {'data-i': 1}
+        };  
+        let oldvdom = {
+            el: {},
+            text: null,
+            tagName: 'DIV',
+            className: [],
+            id: null
+        };
+        let spy0 = api.setClass = sinon.spy();
+        let spy1 = api.setAttrs = sinon.spy();
+        let spy2 = api.setId = sinon.spy();
+        let spy3 = api.appendChildren = sinon.spy();
+        updateEle(e, vdom , oldvdom);
+
+    })
+
+});
+
+
+
+
+
+
+
+
+
+

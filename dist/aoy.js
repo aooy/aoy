@@ -342,7 +342,6 @@ function el$$1(){
 	}
 
 var api$$1 = Object.create(null);
-
 if(isBrowser){
 	api$$1.createElement = function(tag){
 		return document.createElement(tag);

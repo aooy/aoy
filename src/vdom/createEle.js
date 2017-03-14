@@ -16,7 +16,6 @@ export function createEle(vdom){
 
 export function updateEle(e ,vdom, oldVdom){
 	let i;
-	//if( (i = oldVdom) && i.attr.length > 0 ) api.removeAttrs(i);
 	if( (i = vdom.className).length > 0 ) api.setClass(e, i);
 	if( (i = vdom.data) !== null ) api.setAttrs(e, i);
 	if( (i = vdom.id) !== null ) api.setId(e, i);

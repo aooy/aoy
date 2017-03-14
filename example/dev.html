@@ -166,6 +166,9 @@
 	});
 	// console.log(mycp)
 	ao.connect(mycp2, 'b')
+	setTimeout(function(){
+		asStore.get('b').open = false;
+	},1000)
 	// console.log(mycp2.b.t)
  </script>
 </body>

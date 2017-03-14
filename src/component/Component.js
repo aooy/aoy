@@ -1,4 +1,5 @@
 import { isObject } from '../util/index'
+
 export function Component(op){
 	//let origin = {};
 	if(isObject(op)){

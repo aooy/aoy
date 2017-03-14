@@ -4,7 +4,7 @@
 	(factory((global.index = global.index || {})));
 }(this, (function (exports) { 'use strict';
 
-function error(info, context){
+function error$1(info, context){
 	if ( context === void 0 ) context=null;
 
 	if(typeof console !== 'undeifine'){
@@ -102,27 +102,27 @@ function addVnodes(parentElm, before, vnodes, startIdx, endIdx) {
         }
     }    
 function patchVnode(oldVnode, vnode){
-	var el = vnode.el = oldVnode.el;
+	var el$$1 = vnode.el = oldVnode.el;
     var i, oldCh = oldVnode.children, ch = vnode.children;
     if (oldVnode === vnode) { return; }
     if(oldVnode.text && vnode.text && oldVnode.text !== vnode.text){
-    	api$$1.setTextContent(el, vnode.text);
+    	api$$1.setTextContent(el$$1, vnode.text);
     }
     //update class attr	
-    updateEle(el, vnode, oldVnode);
+    updateEle(el$$1, vnode, oldVnode);
     if(ch && ch[0].text && ch.length === 1){
     	//it's childern only a textNode
     	if(!oldCh || oldCh.length !== ch.length || oldCh[0].text !== ch[0].text){
-    		api$$1.removeChild(el, oldCh[0].el);
-    		api$$1.appendChild(el, createEle(ch[0]).el);
+    		api$$1.removeChild(el$$1, oldCh[0].el);
+    		api$$1.appendChild(el$$1, createEle(ch[0]).el);
     	}
     }else{
     	if(oldCh && ch && oldCh !== ch){
-	    	updateChildren(el, oldCh, ch);
+	    	updateChildren(el$$1, oldCh, ch);
 	    }else if(ch){
 	    	createEle(vnode); //create el's children dom
 	    }else if(oldCh){
-	    	api$$1.removeChildren(el);
+	    	api$$1.removeChildren(el$$1);
 	    }
     }
 }
@@ -329,6 +329,18 @@ function updateEle(e ,vdom, oldVdom){
 	if( (i = vdom.children) !== null && !oldVdom) { api$$1.appendChildren(e, i); }
 }
 
+function el$$1(){
+		var arg = toArray(arguments);
+
+		if(arg.length === 0){
+			error('el初始化参数不能为空');
+			return;
+		}
+		if(isArray(arg) && arg.length > 0) {
+			return createVdom$$1.call(this, arg);
+		}	
+	}
+
 var api$$1 = Object.create(null);
 
 if(isBrowser){
@@ -353,8 +365,8 @@ if(isBrowser){
 	api$$1.insertBefore = function(parent, newNode, rf){
 		return parent.insertBefore(newNode, rf);
 	};
-	api$$1.nextSibling = function(el){
-		return el.nextSibling;
+	api$$1.nextSibling = function(el$$1){
+		return el$$1.nextSibling;
 	};
 	api$$1.removeChild = function(parent, rc){
 		return parent.removeChild(rc);
@@ -432,7 +444,7 @@ if(isBrowser){
 		}
 	};
 }else{
-	error("There is not in browser's env");
+	error$1("There is not in browser's env");
 }
 
 function injectStore(store, key, data, context){
@@ -444,7 +456,7 @@ function injectStore(store, key, data, context){
 			archiver(k);
 		}
 	}else{
-		error('Data parameter must be a object');
+		error$1('Data parameter must be a object');
 		return;
 	}
 	return data;
@@ -492,7 +504,7 @@ function Archiver(data, sname, context) {
 			    }
   			}
   		}else{
-  			error("set function's parameter must be a object");
+  			error$1("set function's parameter must be a object");
   		}
   	}
   });
@@ -539,7 +551,7 @@ function Store$$1(){
 			}else if(isdata){	
 				subStore = injectStore(mainStore, '_DEFAULT', arg[1], this);
 			}else{
-				error('Missing key or data parameter');
+				error$1('Missing key or data parameter');
 			}
 		}
 		return subStore;
@@ -685,17 +697,8 @@ function baseInit(Aoy){
 
 	Aoy.prototype.mount = mount;
 	
-	window.el = function(){
-		var arg = toArray(arguments);
+	window.el = el$$1;
 
-		if(arg.length === 0){
-			error('el初始化参数不能为空');
-			return;
-		}
-		if(isArray(arg) && arg.length > 0) {
-			return createVdom$$1.call(this, arg);
-		}	
-	};
 	window.mount = function(parent,vdom){
 		var d = createEle(vdom);
 		api$$1.appendChild(parent, d.el);

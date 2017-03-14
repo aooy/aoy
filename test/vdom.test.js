@@ -1,12 +1,16 @@
+
 import { expect } from 'chai'
 import { api } from '../src/util/index'
 import { createVdom, Vdom, el, createVdomTxt, createEle, updateEle } from '../src/vdom/index'
 
 import sinon from 'sinon';
+import jsdom from 'jsdom'
 
-let oldDocument = global.document;
-global.document = {};
-global.window = {}; 
+
+let doc = jsdom.jsdom('');
+let window = doc.defaultView;
+let document = window.document;
+
 describe('createVdom function test: ', function() {
 
   	it('return Vdom instanceof',function(){
@@ -132,84 +136,53 @@ describe('createVdomTxt function test: ', function() {
     });
 });
  
-
-
 describe('createEle function test: ', function() {
 
+    var doc = jsdom.jsdom('');
+      var window = doc.defaultView;
+      var document = window.document;
 
     it('use createEle fn to create text dom',function(){
-      // let spy0 = sinon.spy();
-      // let spy3 = sinon.spy();
-      // let spy2 = document.createTextNode = sinon.spy();
-      // let spy1 = document.createElement = sinon.stub().returns({
-      //   setAttribute: {},
-      //   appendChild: {},
-      //   style: {}
-      // });
-      let vdom = {
-            el: null,
-            text: '123',
-            tagName:null
-      };
-      let spy0 = api.createTextNode = sinon.spy();
-      //expect(createEle(vdom0)).to.be.instanceof(Vdom);
-      let dom = createEle(vdom);
-      expect(spy0.calledWith('123')).to.be.ok;
 
-      let spy1 = api.createTextNode = sinon.stub().returns({
-        nodeType: 3
-      });
-      dom = createEle(vdom);
-      expect(dom.el.nodeType).to.be.equal(3);
+      let vdom = new Vdom();
+      vdom.text = 123;
+      let spy1 = api.createTextNode = sinon.stub().returns(document.createTextNode(123));
+      createEle(vdom);
+      expect(vdom.el.nodeType).to.be.equal(3);
 
     });
 
     it('use createEle fn with vdom\' tagName create text dom',function(){
-        let vdom = {
-            el: null,
-            text: null,
-            tagName: 'DIV',
-            className: [],
-            id: null
-        };  
-        let spy0 = document.createElement = sinon.spy();  
-        let spy1 = api.createElement = sinon.spy();  
-        let spy2 = api.setClass = sinon.spy();
-        let spy3 = api.setAttrs = sinon.spy();
-        let spy4 = api.setId = sinon.spy();
-        let spy5 = api.appendChildren = sinon.spy();
-        let dom = createEle(vdom);
-        expect(spy1.calledWith('DIV')).to.be.ok;
+             
+        let vdom = new Vdom();
+        vdom.tagName = 'DIV';
+        let spy1 = api.createElement = sinon.stub().returns(document.createElement('div'));
+        createEle(vdom);
+        expect(vdom.el.tagName).to.be.equal('DIV');
     })
-
+    it('vdom has el attr not\' error',function(){
+        let vdom = new Vdom();
+        vdom.tagName = 'DIV';
+        vdom.el = document.createElement('div');
+        createEle(vdom);
+    })
     it('test updateEle fn',function(){
-        let e = {};
-        let vdom = {
-            el: {},
-            text: null,
-            tagName: 'DIV',
-            className: ['a','b'],
-            id: 'myid',
-            data: {'data-i': 1}
-        };  
-        let oldvdom = {
-            el: {},
-            text: null,
-            tagName: 'DIV',
-            className: [],
-            id: null
-        };
-        let spy0 = api.setClass = sinon.spy();
-        let spy1 = api.setAttrs = sinon.spy();
-        let spy2 = api.setId = sinon.spy();
-        let spy3 = api.appendChildren = sinon.spy();
-        updateEle(e, vdom , oldvdom);
-
+        let vdom = el('div.a.b#myid', {'data-i': 1}, [111]);
+        let oldvdom = el('div#a.b', {'data-i': 2}, [221]);
+        updateEle(document.createElement('div'), vdom , oldvdom);
+        updateEle(document.createElement('div'), vdom);
     })
 
 });
 
-
+describe('test el fn: ', function() {
+      it('no param',function(){
+          expect(el()).to.be.not.ok;
+      })
+      it('has param',function(){
+          expect(el('div.a#b',{class:'d c',style:{width: '100px'}},[el('div'),'111'])).to.be.an('object');
+      })
+})
 
 
 

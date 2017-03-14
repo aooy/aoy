@@ -3,7 +3,7 @@ import { Vdom, createEle } from '../vdom/index'
 
 export let api = Object.create(null);
 
-if(isBrowser){
+// if(isBrowser){
 	api.createElement = function(tag){
 		return document.createElement(tag);
 	}; 
@@ -97,9 +97,9 @@ if(isBrowser){
 			this.removeChild(ele, ch[0]);
 		}
 	};
-}else{
-	error("There is not in browser's env");
-}
+// }else{
+// 	error("There is not in browser's env");
+// }
 
 
 

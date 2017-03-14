@@ -294,7 +294,7 @@ function createVdom$$1(arg){
 			if(isObject(v)){
 				// class style clickEvent .ect
 				parseData(vd, v);
-			}else if(isArray(v) || isString(v)){
+			}else if(isArray(v) || isString(v) || isNumber(v)){
 				// childern
 				parseChindren(vd, v);
 			}

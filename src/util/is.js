@@ -22,16 +22,6 @@ export function isNumber(n){
 	return typeof n === 'number';
 }
 
-export function existLetter(s, l){
-	return s.indexOf(l) > -1;
-}
-
-export let isBrowser = true;
-try{
-	isBrowser = typeof window !== 'undefined' && isObject(window) !== '[object Object]';
-}catch(e){
-	isBrowser = false;
-}
 
 
 

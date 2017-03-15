@@ -2,18 +2,24 @@ import { isArray, isString, api } from '../util/index'
 import { Component } from '../component/index'
 
 export function connect(component, storeName){
-	let c;
 	let store = this.store;
+	let c = store.componentManage;
+
 	let getStore = store.get;
 	let cid = component._UID;
-	if( c = store.componentManage[storeName]){
-		c = c.push(component);
-	}else{
-		store.componentManage[storeName] = [component];
-	}
+	// if( c = store.componentManage[storeName]){
+	// 	c = c.push(component);
+	// }else{
+	// 	store.componentManage[storeName] = [component];
+	// }
 
 	let _this = this;
-	let fn = function(com, key){
+	let depfn = function(com, key){
+		if( c[key]){
+			c[key].push(component);
+		}else{
+			c[key] = [component];
+		}
 		_this._dependent(cid, key);
 		api.defineProperty(com, key, {
 				get: function(){
@@ -24,10 +30,10 @@ export function connect(component, storeName){
 
 	if(component instanceof Component){
 		if(isString(storeName)){
-			fn(component, storeName)
+			depfn(component, storeName)
 		}else if(isArray(storeName)){
 			for(let i =0; i < storeName.length; i++ ){
-				fn(component, storeName[i])
+				depfn(component, storeName[i])
 			}
 		}
 		//render vdom

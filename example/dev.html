@@ -128,48 +128,29 @@
 	// myc.c = 44444;
 	// console.warn(myc.a, myc.c)
 /***7. 绑定数据的store ***/
-	var ao = new Aoy();
-	var asStore = ao.store;
+	var ao = Aoy.init();
 
+	var asStore = ao.store;
 	asStore.add('a',{
-		e: '1',
-		d: '2'
+		g: 1,
+		open: false
 	});
 	asStore.add('b',{
-		g: 1,
 		t: '2',
-		open: true
+		open: false
 	});
-	var mycp = ao.createComponent({
-		el: document.body,
-		render:function(){
-			return el('div','test mcp1');
-		}
-	});
-	// console.log(mycp)
-	ao.connect(mycp, 'a')
-	// console.log(mycp.a.e)
-	let i = 1;
+	
 	var mycp2 = ao.createComponent({
 		el: document.body,
-		fn: function(){
-			asStore.get('b').set({
-				g: i++
-			});
-		},
 		render:function(){
-			if(this.b.open){ 
-				return el('div',['open']);
-			 }
-			return el('a',[this.b.g]);
+			return ao.el('a',[this.a.g, ao.el('span',this.b.t)]);
 		}
 	});
-	// console.log(mycp)
-	ao.connect(mycp2, 'b')
-	setTimeout(function(){
-		asStore.get('b').open = false;
-	},1000)
-	// console.log(mycp2.b.t)
+
+	ao.connect(mycp2, ['b','a'])
+	console.log(mycp2)
+	asStore.get('a').g = 777;
+	asStore.get('b').t = 888;
  </script>
 </body>
 </html>

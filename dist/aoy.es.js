@@ -1,9 +1,3 @@
-(function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-	typeof define === 'function' && define.amd ? define(['exports'], factory) :
-	(factory((global.Aoy = global.Aoy || {})));
-}(this, (function (exports) { 'use strict';
-
 function error(info, context){
 	if ( context === void 0 ) context=null;
 
@@ -682,9 +676,5 @@ function init(){
 
 // if(isBrowser) window.Aoy = Aoy;
 
-exports.init = init;
-
-Object.defineProperty(exports, '__esModule', { value: true });
-
-})));
-//# sourceMappingURL=aoy.js.map
+export { init };
+//# sourceMappingURL=aoy.es.js.map

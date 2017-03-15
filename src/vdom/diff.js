@@ -43,10 +43,12 @@ function patchVnode(oldVnode, vnode){
     updateEle(el, vnode, oldVnode)
     if(ch && ch[0].text && ch.length === 1){
     	//it's childern only a textNode
-    	if(!oldCh || oldCh.length !== ch.length || oldCh[0].text !== ch[0].text){
-    		api.removeChild(el, oldCh[0].el);
+    	//if(!oldCh || oldCh.length !== ch.length || oldCh[0].text !== ch[0].text){
+    		oldCh.forEach(function(v, i){
+                api.removeChild(el, oldCh[i].el);
+            });
     		api.appendChild(el, createEle(ch[0]).el);
-    	}
+    	//}
     }else{
     	if(oldCh && ch && oldCh !== ch){
 	    	updateChildren(el, oldCh, ch);

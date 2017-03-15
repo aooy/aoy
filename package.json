@@ -4,7 +4,8 @@
   "description": "A TINY VIEW LIBRARY",
   "main": "src/index.js",
   "scripts": {
-    "build": "rollup -c",
+    "build-es": "rollup -c -n Aoy -f es -i src/index.js -o dist/aoy.es.js",
+    "build": "npm run build-es && rollup -c -n Aoy -f umd -i src/index.js -o dist/aoy.js",
     "test": "node_modules/.bin/mocha --compilers js:babel-core/register --reporter spec --slow 50 --timeout 60000",
     "cover": "node_modules/.bin/istanbul cover node_modules/.bin/_mocha -- -u exports --compilers js:babel-register --timeout 60000"
   },

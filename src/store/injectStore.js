@@ -52,10 +52,10 @@ function Archiver(data, sname, context) {
   					api.defineProperty(data, k, des(k));
   				}
   				storage[k] = o[k];
-  				if(c = cm[sname]){
-			   		 devc(c);
-			    }
   			}
+  			if(c = cm[sname]){
+			   		 devc(c);
+			   	}
   		}else{
   			error("set function's parameter must be a object");
   		}

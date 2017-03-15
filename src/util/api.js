@@ -1,9 +1,8 @@
-import { isBrowser ,error, isArray, isObject, isString } from './index'
+import { error, isArray, isObject, isString } from './index'
 import { Vdom, createEle } from '../vdom/index'
 
 export let api = Object.create(null);
 
-// if(isBrowser){
 	api.createElement = function(tag){
 		return document.createElement(tag);
 	}; 
@@ -12,12 +11,6 @@ export let api = Object.create(null);
 	};
 	api.appendChild = function(parent, child){
 		return parent.appendChild(child);
-	};
-	api.setAttribute = function(ele, key, value){
-		ele.setAttribute(key, value);
-	};
-	api.removeAttribute = function(ele, key){
-		ele.removeAttribute(key);
 	};
 	api.parentNode = function(node){
 		return node.parentNode;
@@ -36,9 +29,6 @@ export let api = Object.create(null);
 	};
 	api.setId = function(ele, id){
 		ele.id = id;
-	};
-	api.replaceChild = function(parent, newChild, oldChild){
-		parent.replaceChild(newChild, oldChild);
 	};
 	api.defineProperty = function(obj, prop, descriptor){
 		Object.defineProperty(obj, prop, descriptor);
@@ -84,22 +74,12 @@ export let api = Object.create(null);
 			}
 		}
 	};
-	api.removeAttrs = function(vn){
-		if(vn.attr.length > 0){
-			for(let i = 0; i < vn.attr.length; i++){
-				this.removeAttribute(vn.el, vn.attr[i]);
-			}
-		}
-	};
 	api.removeChildren = function(ele){
 		let i, ch = ele.childNodes;
 		while(ch[0]){
 			this.removeChild(ele, ch[0]);
 		}
 	};
-// }else{
-// 	error("There is not in browser's env");
-// }
 
 
 

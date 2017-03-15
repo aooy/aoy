@@ -8,7 +8,7 @@ export function baseInit(Aoy){
 
 		this.dependManage = Object.create(null);
 		this._initStore();
-
+			
 		if(arg.length === 0){
 			//warn('初始化参数不能为空')
 			return;
@@ -27,14 +27,13 @@ export function baseInit(Aoy){
 	Aoy.prototype._dependent = dependent;
 
 	Aoy.prototype.mount = mount;
-	
-	window.el = el;
 
-	window.mount = function(parent,vdom){
-		const d = createEle(vdom);
-		api.appendChild(parent, d.el);
-	}
-	window.patch = patch;
+	Aoy.prototype.el = el;
+
+	Aoy.prototype.patch = patch;
+	// window.el = el;
+
+	// window.patch = patch;
 
 }
 

@@ -1,8 +1,8 @@
 {
   "name": "aoy",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "a tiny virtual dom library for creating user interfaces.",
-  "main": "dist/aoy.js",
+  "main": "index.js",
   "scripts": {
     "build-es": "rollup -c -n Aoy -f es -i src/index.js -o dist/aoy.es.js",
     "build": "npm run build-es && rollup -c -n Aoy -f umd -i src/index.js -o dist/aoy.js && gulp jsmin",

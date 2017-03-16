@@ -1,13 +1,9 @@
-function error(info, context){
-	if ( context === void 0 ) context=null;
-
+function error(info){
 	if(typeof console !== 'undeifine'){
 		console.error(info);
 	}
 }
-function warn(info, context){
-	if ( context === void 0 ) context=null;
-
+function warn(info){
 	if(typeof console !== 'undeifine'){
 		console.warn(info);
 	}
@@ -417,9 +413,6 @@ function injectStore(store, key, data, context){
 		for(var k in data){
 			archiver(k);
 		}
-	}else{
-		error('Data parameter must be a object');
-		return;
 	}
 	return data;
 }
@@ -577,11 +570,6 @@ function connect(component, storeName){
 
 	var getStore = store.get;
 	var cid = component._UID;
-	// if( c = store.componentManage[storeName]){
-	// 	c = c.push(component);
-	// }else{
-	// 	store.componentManage[storeName] = [component];
-	// }
 
 	var _this = this;
 	var depfn = function(com, key){
@@ -632,16 +620,8 @@ function baseInit(Aoy){
 
 		this.dependManage = Object.create(null);
 		this._initStore();
-			
-		if(arg.length === 0){
-			//warn('初始化参数不能为空')
-			return;
-		}
-		if(isArray(arg) && arg.length > 0) {
-			var op = parseOption.call(this,arg);
-		}	
 	};
-
+	
 	Aoy.prototype._initStore = initStore$$1;
 
 	Aoy.prototype.createComponent = createComponent$$1;
@@ -663,8 +643,7 @@ function baseInit(Aoy){
 
 function AoyC(){
 	if(this instanceof AoyC){
-		var arg = toArray(arguments);
-		this._init(arg);
+		this._init();
 	}	
 }
 

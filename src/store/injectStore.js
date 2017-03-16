@@ -22,16 +22,13 @@ function Archiver(data, sname, context) {
 			patch(v.vdom, newVn);
 			v.vdom = newVn;
 		});
-  	    console.log('有组件依赖此属性',cm[sname])
   };
   let des  = function(key){
 	  return {
 	  		  get: function() {
-			      console.log('get:'+key+';sname:'+sname+';store', context)
 			      return storage[key];
 			    },
 			  set: function(value) {
-			      console.log('set'+key+';sname:'+sname)
 			      storage[key] = value;
 			      if(c = cm[sname]){
 			   		 devc(c);
@@ -45,7 +42,6 @@ function Archiver(data, sname, context) {
   		if(isObject(o = arguments[0])){
   			for(let k in o){
   				if(!storage.hasOwnProperty(k)){
-  					console.log('new key')
   					api.defineProperty(data, k, des(k));
   				}
   				storage[k] = o[k];

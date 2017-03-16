@@ -1,9 +1,9 @@
-export function error(info, context=null){
+export function error(info){
 	if(typeof console !== 'undeifine'){
 		console.error(info)
 	}
 }
-export function warn(info, context=null){
+export function warn(info){
 	if(typeof console !== 'undeifine'){
 		console.warn(info)
 	}

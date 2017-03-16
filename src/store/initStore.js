@@ -11,7 +11,6 @@ export function initStore(){
 				warn('Not allowed to modify store');
 			},
 			get: function(){
-				console.log('get:取得store')
 				return STORE;
 			}
 		})

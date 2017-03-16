@@ -7,11 +7,6 @@ export function connect(component, storeName){
 
 	let getStore = store.get;
 	let cid = component._UID;
-	// if( c = store.componentManage[storeName]){
-	// 	c = c.push(component);
-	// }else{
-	// 	store.componentManage[storeName] = [component];
-	// }
 
 	let _this = this;
 	let depfn = function(com, key){

@@ -5,7 +5,7 @@ export function el(){
 		const arg = toArray(arguments);
 
 		if(arg.length === 0){
-			error('el初始化参数不能为空')
+			error('Parameter cannot be empty')
 			return false;
 		}
 		if(isArray(arg) && arg.length > 0) {

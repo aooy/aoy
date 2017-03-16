@@ -626,9 +626,6 @@ function baseInit(Aoy){
 	Aoy.prototype.el = el$$1;
 
 	Aoy.prototype.patch = patch$$1;
-	// window.el = el;
-
-	// window.patch = patch;
 
 }
 
@@ -643,10 +640,9 @@ function init(){
 	return new AoyC();
 }
 
-
-// if(isBrowser) window.Aoy = Aoy;
-
 exports.init = init;
+exports.el = el$$1;
+exports.createComponent = createComponent$$1;
 
 Object.defineProperty(exports, '__esModule', { value: true });
 

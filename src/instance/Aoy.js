@@ -11,6 +11,3 @@ export function init(){
 	baseInit(AoyC)
 	return new AoyC();
 }
-
-
-// if(isBrowser) window.Aoy = Aoy;

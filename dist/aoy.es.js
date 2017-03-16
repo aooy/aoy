@@ -620,9 +620,6 @@ function baseInit(Aoy){
 	Aoy.prototype.el = el$$1;
 
 	Aoy.prototype.patch = patch$$1;
-	// window.el = el;
-
-	// window.patch = patch;
 
 }
 
@@ -637,8 +634,5 @@ function init(){
 	return new AoyC();
 }
 
-
-// if(isBrowser) window.Aoy = Aoy;
-
-export { init };
+export { init, el$$1 as el, createComponent$$1 as createComponent };
 //# sourceMappingURL=aoy.es.js.map

@@ -23,9 +23,6 @@ export function baseInit(Aoy){
 	Aoy.prototype.el = el;
 
 	Aoy.prototype.patch = patch;
-	// window.el = el;
-
-	// window.patch = patch;
 
 }
 

@@ -1,6 +1,6 @@
 {
   "name": "aoy",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "a tiny virtual dom library for creating user interfaces.",
   "main": "src/index.js",
   "scripts": {
@@ -23,6 +23,7 @@
   "bugs": {
     "url": "https://github.com/aooy/aoy/issues"
   },
+  "dependencies": {},
   "devDependencies": {
     "babel-core": "^6.24.0",
     "babel-preset-es2015": "^6.22.0",

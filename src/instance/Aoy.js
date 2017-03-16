@@ -3,8 +3,7 @@ import { toArray} from '../util/index'
 
 export function AoyC(){
 	if(this instanceof AoyC){
-		const arg = toArray(arguments);
-		this._init(arg);
+		this._init();
 	}	
 }
 

@@ -1,6 +1,7 @@
 import { expect } from 'chai'
 import jsdom from 'jsdom'
 import { init } from '../src/index'
+import { initStore } from '../src/store/index'
 
 describe('test store: ', function() {
 	let aoy = init();
@@ -12,13 +13,18 @@ describe('test store: ', function() {
 
 	it('test warn',function(){
 		store.add(1);
+		aoy.store = {};
+		initStore();
 	});
 
 	it('add _DEFAULT store',function(){
 		store.add({
 			a:2
 		});
+		expect(store.get().a).to.be.equal(2);
 		expect(store.get('_DEFAULT').a).to.be.equal(2);
+		store.remove();
+		expect(store.get('_DEFAULT')).to.be.not.ok;
 	});
 
 	it('add user-defined store',function(){
@@ -51,16 +57,18 @@ describe('test store: ', function() {
 		for(let k in s){
 			i++;
 		}	
-		expect(i===2).to.be.ok;
+		expect(i===1).to.be.ok;
 	});
 
 	it('test set', function(){
+
 		store.add('forset',{
 			b: 'b'
 		});
 		store.get('forset').set({
 			a:'a'
 		});
+		store.get('forset').set('11');
 		expect(store.get('forset').a).to.be.equal('a');
 
 		store.get('forset').a = 'new';

@@ -1,7 +1,7 @@
 import { expect } from 'chai'
 import jsdom from 'jsdom'
 import { init } from '../src/index'
-import { api } from '../src/util/index'
+import { api, warn, error, isFunction, isString, isNumber } from '../src/util/index'
 import { createVdom, Vdom, el, createVdomTxt, createEle, updateEle, patch } from '../src/vdom/index'
 import { mount } from '../src/render/index'
 import { Component } from '../src/component'
@@ -108,6 +108,18 @@ describe('basics lib use: ', function() {
 		
  	})
 
+	it('test data style class',function(){
+		document.body.innerHTML = '';
+		let mycp = aoy.createComponent({
+			el: document.body,
+			render:function(){
+				return aoy.el('div',{style:{width:'100px'}, class:'a b'});
+			}
+		});
+		aoy.connect(mycp);
+		expect(document.body.innerHTML).to.be.equal('<div class="a b" style="width: 100px;"></div>')
+	});
+
 	it('oldnode\'s children is empty, newnode\' length greater than 0',function(){
 		document.body.innerHTML = '';
 		store.add('r',{
@@ -164,15 +176,32 @@ describe('basics lib use: ', function() {
 			txt1: 777,
 			txt4: 777
 		});
-
 	
 		expect(document.body.innerHTML).to.be.equal('<div>666<div>777</div></div>');
  	});
 })
 
+describe('test console:', function() {
+	it('hope not error',function(){
+		warn('warn');
+		error('error');
+	});
+});
 
-
-
+describe('test is:', function() {
+	it('isFunction',function(){
+		let fn = function(){};
+		expect(isFunction(fn)).to.be.ok;
+		let fn2 = '222';
+		expect(isFunction(fn2)).to.be.not.ok;
+	});
+	it('isNumber',function(){
+		let n = 123;
+		expect(isNumber(n)).to.be.ok;
+		let n2 = '222';
+		expect(isNumber(n2)).to.be.not.ok;
+	});
+});
 
 
 

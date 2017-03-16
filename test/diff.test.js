@@ -3,7 +3,7 @@ import sinon from 'sinon';
 import jsdom from 'jsdom'
 
 import { init } from '../src/index'
-import { createEle, patch } from '../src/vdom/index'
+import { createEle, patch, updateChildren, patchVnode } from '../src/vdom/index'
 import { mount } from '../src/render/index'
 import { api } from '../src/util/index'
 

@@ -8,16 +8,8 @@ export function baseInit(Aoy){
 
 		this.dependManage = Object.create(null);
 		this._initStore();
-			
-		if(arg.length === 0){
-			//warn('初始化参数不能为空')
-			return;
-		}
-		if(isArray(arg) && arg.length > 0) {
-			const op = parseOption.call(this,arg)
-		}	
 	}
-
+	
 	Aoy.prototype._initStore = initStore;
 
 	Aoy.prototype.createComponent = createComponent;

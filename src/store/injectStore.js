@@ -8,9 +8,6 @@ export function injectStore(store, key, data, context){
 		for(let k in data){
 			archiver(k);
 		}
-	}else{
-		error('Data parameter must be a object');
-		return;
 	}
 	return data;
 }

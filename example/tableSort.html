@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>table sort demo</title>
+	<meta charset="utf-8"/>
+	<style type="text/css">
+	table{
+		border: 1px solid #ccc;
+	}
+	th{
+		background: orange;
+	}
+	td,th{
+		border: 1px solid #ccc;
+		text-align: center;
+		padding: 5px;
+	}
+</style>
+</head>
+<body>
+</body>
+<script type="text/javascript" src="../dist/aoy.js"></script>
+<script type="text/javascript">
+var aoy = Aoy.init();
+var store = aoy.store;
+var el = aoy.el;
+var userData = [
+	{name: 'c', age: 19, city: 'Beijin'},
+	{name: 'a', age: 20, city: 'Xian'},
+	{name: 'b', age: 12, city: 'Hangzhou'},
+	{name: 'd', age: 30, city: 'Wuhan'}
+];
+store.add('table',{
+	userData: userData
+});
+
+function Table(childern){
+	return el('table',childern);
+}
+
+function Tr(childern){
+	return el('tr', childern);
+}
+function Th(txt){
+	return el('td', txt);
+}
+function Td(txt){
+	return el('td', txt);
+}
+var sortStore = Object.create(null);
+
+var mytable = aoy.createComponent({
+	el: document.body,
+	sortData: function(field,e){
+		let i;
+		userData.sort(function(a, b){
+			if(i = (sortStore[field] === 'down')){		
+				if(a[field] < b[field]) return 1;
+			}else{
+				if(a[field] > b[field]) return 1;
+			}
+		});
+		sortStore[field] = i?'up':'down';
+		this.table.userData = userData;
+	},
+	render: function(){
+		var trs = [
+				el('tr',[
+						 el('th',{onclick: this.sortData.bind(this, 'name') },'name'), 
+						 el('th',{onclick: this.sortData.bind(this, 'age') },'age'), 
+						 el('th',{onclick: this.sortData.bind(this, 'city') },'city')
+						]
+					)
+				];
+		this.table.userData.forEach(function(v, i){
+				var tdName = Td(v.name);
+				var tdAge = Td(v.age);
+				var tdCity = Td(v.city);
+				var tr = Tr([tdName, tdAge, tdCity]);
+				trs.push(tr);
+			});	
+		var table = Table(trs);
+		return table;
+	}
+});
+
+aoy.connect(mytable,'table');
+</script>
+</html>

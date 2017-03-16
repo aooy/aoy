@@ -208,6 +208,13 @@ describe('patch function test: ', function() {
 		autoPatch(oldnode,newnode,'<div><li><div>22</div></li></div>');
 	});
 
+	it('style change', function(){
+		let oldnode = el('div',{'data-a':'b', style: {color: 'red'}});
+		let newnode = el('div',{id:'new', 'data-a':'a', style: {color: 'blue'}});
+		autoPatch(oldnode,newnode,'<div style="color: blue;" id="new"></div>');
+		expect(document.querySelector('#new')['data-a']).to.be.equal('a');
+	});
+
 })
 
 

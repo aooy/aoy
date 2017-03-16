@@ -36,20 +36,11 @@ function patchVnode(oldVnode, vnode){
 	const el = vnode.el = oldVnode.el;
     let i, oldCh = oldVnode.children, ch = vnode.children;
     if (oldVnode === vnode) return;
+    
     if(oldVnode.text && vnode.text && oldVnode.text !== vnode.text){
-    	api.setTextContent(el, vnode.text);
-    }
-    //update class attr	
-    updateEle(el, vnode, oldVnode)
-    if(ch && ch[0].text && ch.length === 1){
-    	//it's childern only a textNode
-    	//if(!oldCh || oldCh.length !== ch.length || oldCh[0].text !== ch[0].text){
-    		oldCh.forEach(function(v, i){
-                api.removeChild(el, oldCh[i].el);
-            });
-    		api.appendChild(el, createEle(ch[0]).el);
-    	//}
+        api.setTextContent(el, vnode.text);
     }else{
+        updateEle(el, vnode, oldVnode)
     	if(oldCh && ch && oldCh !== ch){
 	    	updateChildren(el, oldCh, ch);
 	    }else if(ch){

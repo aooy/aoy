@@ -84,20 +84,11 @@ function patchVnode(oldVnode, vnode){
 	var el$$1 = vnode.el = oldVnode.el;
     var i, oldCh = oldVnode.children, ch = vnode.children;
     if (oldVnode === vnode) { return; }
+    
     if(oldVnode.text && vnode.text && oldVnode.text !== vnode.text){
-    	api$$1.setTextContent(el$$1, vnode.text);
-    }
-    //update class attr	
-    updateEle(el$$1, vnode, oldVnode);
-    if(ch && ch[0].text && ch.length === 1){
-    	//it's childern only a textNode
-    	//if(!oldCh || oldCh.length !== ch.length || oldCh[0].text !== ch[0].text){
-    		oldCh.forEach(function(v, i){
-                api$$1.removeChild(el$$1, oldCh[i].el);
-            });
-    		api$$1.appendChild(el$$1, createEle(ch[0]).el);
-    	//}
+        api$$1.setTextContent(el$$1, vnode.text);
     }else{
+        updateEle(el$$1, vnode, oldVnode);
     	if(oldCh && ch && oldCh !== ch){
 	    	updateChildren(el$$1, oldCh, ch);
 	    }else if(ch){
@@ -282,7 +273,6 @@ function createVdom$$1(arg){
 		}
 		i++;
 	}
-	console.log(vd);
 	return vd;
 }
 
@@ -313,7 +303,7 @@ function el$$1(){
 		var arg = toArray(arguments);
 
 		if(arg.length === 0){
-			error('el初始化参数不能为空');
+			error('Parameter cannot be empty');
 			return false;
 		}
 		if(isArray(arg) && arg.length > 0) {
@@ -427,16 +417,13 @@ function Archiver(data, sname, context) {
 			patch$$1(v.vdom, newVn);
 			v.vdom = newVn;
 		});
-  	    console.log('有组件依赖此属性',cm[sname]);
   };
   var des  = function(key){
 	  return {
 	  		  get: function() {
-			      console.log('get:'+key+';sname:'+sname+';store', context);
 			      return storage[key];
 			    },
 			  set: function(value) {
-			      console.log('set'+key+';sname:'+sname);
 			      storage[key] = value;
 			      if(c = cm[sname]){
 			   		 devc(c);
@@ -450,7 +437,6 @@ function Archiver(data, sname, context) {
   		if(isObject(o = arguments[0])){
   			for(var k in o){
   				if(!storage.hasOwnProperty(k)){
-  					console.log('new key');
   					api$$1.defineProperty(data, k, des(k));
   				}
   				storage[k] = o[k];
@@ -478,7 +464,6 @@ function initStore$$1(){
 				warn('Not allowed to modify store');
 			},
 			get: function(){
-				console.log('get:取得store');
 				return STORE;
 			}
 		});

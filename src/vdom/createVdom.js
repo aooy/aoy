@@ -79,6 +79,5 @@ export function createVdom(arg){
 		}
 		i++;
 	}
-	console.log(vd)
 	return vd;
 }

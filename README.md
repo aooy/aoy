@@ -12,16 +12,27 @@ npm:
 ### ES2015
 ```js
 import { init, el } from 'aoy';
-const myAoy = init();
-aoy0.store.add('firstStore',{txt: 'aoy'});
 
+//1. init aoy.
+const myAoy = init();
+conse store = myAoy.store;
+
+//2. add a store to aoy instance.
+store.add('firstStore',{txt: 'this is a P'});
+
+//3. create a component.
 const myP = aoy.createComponent({
                 el: document.body,
                 render: function(){
                     return el('p', this.firstStore.txt);
                 }
             });
+            
+//4. component connect to a store, view will be render immediately.
 myAoy.connect(myP, 'firstStore');
+
+//5. when u update this component's store, view will be render again.
+store.get('firstStore').txt = 'change view';
 ```
 ### CommonJS
 ```js
@@ -38,3 +49,12 @@ var store = aoy.store;
 var el = aoy.el;
 </script>
 ```
+## Examples
+
+* [simple data-binding input](https://aooy.github.io/aoy/input)
+* [table sort](https://aooy.github.io/aoy/tableSort)
+
+
+
+
+

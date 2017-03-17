@@ -54,6 +54,65 @@ var el = aoy.el;
 * [simple data-binding input](https://aooy.github.io/aoy/input)
 * [table sort](https://aooy.github.io/aoy/tableSort)
 
+## Api
+
+### aoy.init
+init returns a aoy instance.
+
+### aoy.el(selectors, props, children])
+return a Virtual DOM.
+```js
+var span = el('span','this is p') // render <span>this is p</span>
+var p = el('div',[ span ]) // render <p><span>this is p</span></p>
+var div = el('div#mydiv.classA.classB') // render <div id="mydiv" class="classA classB"></div>
+```
+
+### aoy.createComponent(option)
+
+
+### aoy.connect(component[,stores])
+when connect function is called, Virtual DOM will be rendered immediately.
+```js
+var aoy.connect(mycomponent, 'a') // mycomponent denpend on a.
+var aoy.connect(mycomponent, ['a', 'b']) // mycomponent denpend on a and b.
+```
+
+### store
+aoy instance provides a store.
+```js
+var aoy = Aoy.init();
+var store = aoy.store;
+```
+
+### store.add([key ,] data)
+function add is used to save data.
+if no key, this data's key is _DEFAULT.
+```js
+aoy.store.add('a',{b:1}) // a:{b:1}
+aoy.store.add({b:1}) // _DEFAULT:{b:1}
+```
+
+### store.get(key) 
+Return to the corresponding store's data
+```js
+aoy.store.add('a',{b:1})
+aoy.store.get('a') // return {b: 1}
+```
+
+### sotre.set(newData)
+set can update data.
+```js
+aoy.store.add('a',{b:1})
+aoy.store.get('a').set({a:1, b:2}) 
+aoy.store.get('a') // return {a:1, b:2}
+```
+
+
+
+
+
+
+
 
 
 

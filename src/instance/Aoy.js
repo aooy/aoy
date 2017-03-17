@@ -1,13 +1,13 @@
 import { baseInit } from './baseInit'
 import { toArray} from '../util/index'
 
-export function AoyC(){
-	if(this instanceof AoyC){
-		this._init();
+export function AoyC () {
+	if (this instanceof AoyC) {
+		this._init()
 	}	
 }
 
-export function init(){
+export function init () {
 	baseInit(AoyC)
-	return new AoyC();
+	return new AoyC()
 }

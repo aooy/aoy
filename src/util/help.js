@@ -1,3 +1,3 @@
-export function toArray(arr){
-	return [].slice.call(arr);
+export function toArray (arr) {
+	return [].slice.call(arr)
 }

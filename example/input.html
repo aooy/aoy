@@ -34,14 +34,13 @@ var myp = aoy.createComponent({
 var myinput = aoy.createComponent({
 	el: document.body,
 	inputFn: function(){
-		console.warn(this.value)
 		inputStore.value = this.value;
 	},
 	render: function(){
 		return el('Input', {
-							value: this.inputStore.value, 
-							oninput: this.inputFn,
-							type: 'text' 
+								oninput: this.inputFn,
+								placeholder: this.inputStore.value,
+								type: 'text' 
 							});
 	}
 });

@@ -7,7 +7,9 @@ npm:
 
     $ npm install aoy --save
 
-## Usage (ES2015 import)
+## Usage
+
+### ES2015
 ```js
 import { init, el } from 'aoy';
 const myAoy = init();
@@ -19,27 +21,20 @@ const myP = aoy.createComponent({
                     return el('p', this.firstStore.txt);
                 }
             });
-aoy0.connect(myP, 'firstStore');
+myAoy.connect(myP, 'firstStore');
 ```
-## Using with commonjs
+### CommonJS
 ```js
 var myAoy = require('aoy').init();
 var el = myAoy.el;
 ```
-## Browser globals
-The dist folder contains vue-strap.js and vue-strap.min.js.
+### Browser globals
+The dist folder contains aoy.js and aoy.min.js.
 ```js
-<script src="path/to/vue.js"></script>
+<script src="path/to/aoy.js"></script>
 <script>
-    var vm = new Vue({
-        components: {
-            alert: VueStrap.alert
-        },
-        el: "#app",
-        data: {
-            showRight: false,
-            showTop: false
-        }
-    })
+var aoy = Aoy.init();
+var store = aoy.store;
+var el = aoy.el;
 </script>
 ```

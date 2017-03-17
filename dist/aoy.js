@@ -91,7 +91,7 @@ function patchVnode(oldVnode, vnode){
     var i, oldCh = oldVnode.children, ch = vnode.children;
     if (oldVnode === vnode) { return; }
     
-    if(oldVnode.text && vnode.text && oldVnode.text !== vnode.text){
+    if(oldVnode.text !== null && vnode.text !== null && oldVnode.text !== vnode.text){
         api$$1.setTextContent(el$$1, vnode.text);
     }else{
         updateEle(el$$1, vnode, oldVnode);
@@ -642,7 +642,6 @@ function init(){
 
 exports.init = init;
 exports.el = el$$1;
-exports.createComponent = createComponent$$1;
 
 Object.defineProperty(exports, '__esModule', { value: true });
 

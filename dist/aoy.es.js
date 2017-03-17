@@ -85,7 +85,7 @@ function patchVnode(oldVnode, vnode){
     var i, oldCh = oldVnode.children, ch = vnode.children;
     if (oldVnode === vnode) { return; }
     
-    if(oldVnode.text && vnode.text && oldVnode.text !== vnode.text){
+    if(oldVnode.text !== null && vnode.text !== null && oldVnode.text !== vnode.text){
         api$$1.setTextContent(el$$1, vnode.text);
     }else{
         updateEle(el$$1, vnode, oldVnode);
@@ -634,5 +634,5 @@ function init(){
 	return new AoyC();
 }
 
-export { init, el$$1 as el, createComponent$$1 as createComponent };
+export { init, el$$1 as el };
 //# sourceMappingURL=aoy.es.js.map

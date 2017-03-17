@@ -215,6 +215,12 @@ describe('patch function test: ', function() {
 		expect(document.querySelector('#new')['data-a']).to.be.equal('a');
 	});
 
+	it('textNode become null ', function(){
+		let oldnode = el('div','123');
+		let newnode = el('div','');
+		autoPatch(oldnode,newnode,'<div></div>');
+	});
+
 })
 
 

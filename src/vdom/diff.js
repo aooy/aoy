@@ -37,7 +37,7 @@ function patchVnode(oldVnode, vnode){
     let i, oldCh = oldVnode.children, ch = vnode.children;
     if (oldVnode === vnode) return;
     
-    if(oldVnode.text && vnode.text && oldVnode.text !== vnode.text){
+    if(oldVnode.text !== null && vnode.text !== null && oldVnode.text !== vnode.text){
         api.setTextContent(el, vnode.text);
     }else{
         updateEle(el, vnode, oldVnode)

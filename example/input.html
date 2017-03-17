@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>input demo</title>
+	<meta charset="utf-8"/>
+</head>
+<body>
+</body>
+<script type="text/javascript" src="../dist/aoy.js"></script>
+<script type="text/javascript">
+var aoy = Aoy.init();
+var store = aoy.store;
+var el = aoy.el;
+
+store.add('inputStore',{
+	value: 'this is aoy'
+});
+var inputStore = store.get('inputStore');
+
+function P(txt){
+	return el('div',txt);
+}
+
+function Input(vaule){
+	return el('Input', {value: vaule});
+}
+var myp = aoy.createComponent({
+	el: document.body,
+	render: function(){
+		return P(this.inputStore.value);
+	}
+});
+
+var myinput = aoy.createComponent({
+	el: document.body,
+	inputFn: function(){
+		console.warn(this.value)
+		inputStore.value = this.value;
+	},
+	render: function(){
+		return el('Input', {
+							value: this.inputStore.value, 
+							oninput: this.inputFn,
+							type: 'text' 
+							});
+	}
+});
+aoy.connect(myp, ['inputStore']);
+aoy.connect(myinput, ['inputStore']);
+
+</script>
+</html>

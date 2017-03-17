@@ -1,6 +1,6 @@
 {
   "name": "aoy",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "a tiny virtual dom library for creating user interfaces.",
   "main": "index.js",
   "scripts": {

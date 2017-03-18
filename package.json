@@ -1,7 +1,7 @@
 {
   "name": "aoy",
-  "version": "1.0.4",
-  "description": "a tiny virtual dom library for creating user interfaces.",
+  "version": "1.0.5",
+  "description": "Tiny JavaScript MVVM library with Virtual DOM. It has only ~600 lines of code.",
   "main": "index.js",
   "scripts": {
     "build-es": "rollup -c -n Aoy -f es -i src/index.js -o dist/aoy.es.js",

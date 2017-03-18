@@ -1,3 +1,12 @@
+/**
+ * Virtual DOM patching algorithm based on Snabbdom by
+ * Simon Friis Vindum (@paldepind)
+ * Licensed under the MIT License
+ * https://github.com/paldepind/snabbdom/blob/master/LICENSE
+ *
+ * modified by Yangjingzhuo
+ *
+ */
 import { api, isArray} from '../util/index'
 import { createEle, updateEle } from './index'
 

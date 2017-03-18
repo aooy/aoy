@@ -57,7 +57,7 @@ var el = aoy.el;
 ## Api
 
 ### aoy.init
-init returns a aoy instance.
+init function returns a aoy instance.
 
 ### aoy.el(selectors, props, children])
 return a Virtual DOM.
@@ -67,8 +67,30 @@ var p = el('div',[ span ]) // render <p><span>this is p</span></p>
 var div = el('div#mydiv.classA.classB') // render <div id="mydiv" class="classA classB"></div>
 ```
 
-### aoy.createComponent(option)
+### aoy.createComponent(descriptor)
+descriptor is Object
 
+#### descriptor.el:
+it is a HTMLElement for component's parentNode.
+    
+#### descriptor.render:
+render functon returns vnode.
+    
+```js
+var inputStore = store.get('inputStore');
+var myinput = aoy.createComponent({
+	inputFn: function(){
+		
+	},
+	render: function(){
+		return el('Input', {
+                        oninput: this.inputFn,
+                        placeholder: this.inputStore.value,
+                        type: 'text' 
+				});
+	}
+});
+```
 
 ### aoy.connect(component[,stores])
 when connect function is called, Virtual DOM will be rendered immediately.
@@ -100,13 +122,20 @@ aoy.store.get('a') // return {b: 1}
 ```
 
 ### sotre.set(newData)
-set can update data.
+update data.
 ```js
 aoy.store.add('a',{b:1})
-aoy.store.get('a').set({a:1, b:2}) 
+
+aoy.store.get('a').set({a:1, b:2}) //same: aoy.store.get('a') = {a:1, b:2}
+
 aoy.store.get('a') // return {a:1, b:2}
 ```
+### Note
+* support IE 9 and up + all modern browsers.
+* aoy only data-binding one-level key, if data has deep structure, suggest to cooperate [immutable-js](https://github.com/facebook/immutable-js/) .
 
+## License
+[MIT](https://github.com/pakastin/redom/blob/master/LICENSE)
 
 
 

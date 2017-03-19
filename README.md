@@ -2,7 +2,7 @@
 Tiny JavaScript MVVM library with Virtual DOM. It has only ~600 lines of code.
 
 ## Introduction
-[aoy是如何养成的](https://github.com/aooy/blog/issues/1)
+[一个轻量级的MVVM框架-aoy](https://github.com/aooy/blog/issues/1)
 
 ## Install
 

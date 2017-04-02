@@ -134,7 +134,7 @@ aoy.store.get('a').set({a:1, b:2}) //same: aoy.store.get('a') = {a:1, b:2}
 aoy.store.get('a') // return {a:1, b:2}
 ```
 ### Note
-* support IE 9 and up + all modern browsers.
+* support IE 10 and up + all modern browsers.
 * aoy only data-binding one-level key, if data has deep structure, suggest to cooperate [immutable-js](https://github.com/facebook/immutable-js/) .
 
 ## License
